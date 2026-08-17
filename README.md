@@ -1,12 +1,12 @@
 # Helper
 
-A static page for people 60 and older. It finds official SNAP and energy-help pages for your state, prints a paper checklist, and keeps an interview date on this device.
-
 Live site: https://baney75.github.io/helper/
 
-This is unofficial. It is not a government website. It does not decide whether you qualify, and it does not file an application. If you already know your state, skip the ZIP box and pick it from the list.
+Type a ZIP. The official SNAP page for that state appears. Print a papers checklist. Save the interview date on this device.
 
-Your answers stay in this browser. There is no account.
+This is unofficial. It is not a government website. It does not decide whether you qualify, and it does not file an application. Your answers stay in the browser. There is no account.
+
+If you already know your state, skip the ZIP box and pick it from the list.
 
 ## Why this exists
 
@@ -35,6 +35,12 @@ npm run build
 State links live in `src/data/programs.ts`. SNAP income tables for FY2026 (1 Oct 2025 through 30 Sep 2026) live in `src/data/fpl.ts`. Sources are in `research/SOURCES.md`.
 
 If a portal is down, keep the official how-to page. Do not invent URLs. Screening copy may say `likely_worth_applying`, `maybe`, or `probably_not`. It must not say eligible or ineligible.
+
+## If you post this
+
+The demo is the ZIP box. `19103` should surface Pennsylvania's official COMPASS SNAP page and the LIHEAP page. `90210` should surface California. Then print the packet and save an interview date.
+
+Quote, if you want one: USDA FY2022, 55% of eligible people 60+ were on SNAP, versus 88% overall.
 
 ## License
 

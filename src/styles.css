@@ -1,13 +1,13 @@
 :root {
-  --ink: #1c1917;
-  --paper: #f6f1e7;
-  --card: #fffdf8;
-  --line: #d6cfc3;
+  --ink: #1a1714;
+  --paper: #f3ead8;
+  --card: #fffaf0;
+  --line: #cfc3ae;
   --accent: #173a63;
   --accent-hover: #0f2744;
+  --stamp: #8f1d1d;
   --focus: #b45309;
-  --muted: #44403c;
-  --space: 1rem;
+  --muted: #4a453d;
   --max: 42rem;
   font-size: 125%;
 }
@@ -51,6 +51,19 @@ footer {
   padding: 1.25rem 1.25rem 0;
 }
 
+.stamp {
+  display: inline-block;
+  margin: 0 0 0.75rem;
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  padding: 0.15rem 0.5rem;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 h1,
 h2,
 h3 {
@@ -60,26 +73,56 @@ h3 {
 }
 
 h1 {
-  font-size: 2rem;
-  margin: 0 0 0.4rem;
+  font-size: 2.35rem;
+  margin: 0 0 0.45rem;
 }
 
 .lede {
-  font-size: 1.2rem;
+  font-size: 1.28rem;
+  margin: 0 0 1rem;
+}
+
+.fact {
+  margin: 0 0 0.25rem;
+  padding: 0.85rem 1rem;
+  background: var(--card);
+  border-left: 4px solid var(--accent);
   color: var(--muted);
-  margin: 0 0 1.25rem;
+  font-size: 1.02rem;
+}
+
+.hint {
+  color: var(--muted);
+  margin: 0 0 1rem;
+}
+
+.stamp-line {
+  margin: 0 0 0.6rem;
+  font-weight: 650;
 }
 
 .banner {
   background: var(--card);
   border: 1px solid var(--line);
   padding: 1rem 1.1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
 }
 
 .banner p {
   white-space: pre-wrap;
-  margin: 0;
+  margin: 0.6rem 0 0;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 650;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.hero .links {
+  margin-top: 0.4rem;
 }
 
 label {
@@ -122,9 +165,9 @@ button,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
+  min-height: 48px;
   min-width: 44px;
-  padding: 0.45rem 0.9rem;
+  padding: 0.55rem 1rem;
   font: inherit;
   font-weight: 650;
   color: #fff;
@@ -149,7 +192,8 @@ button.secondary,
 a:focus,
 button:focus,
 input:focus,
-select:focus {
+select:focus,
+summary:focus {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
@@ -163,19 +207,81 @@ select:focus {
 
 .links a {
   display: block;
-  margin: 0.4rem 0;
+  margin: 0.45rem 0;
 }
 
 .status {
   color: var(--muted);
+  min-height: 1.5em;
+}
+
+#screen-result.has-result {
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  background: var(--card);
+  border: 2px solid var(--accent);
+}
+
+#screen-headline {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 650;
+}
+
+#screen-body {
+  margin: 0;
+}
+
+.packet {
+  background: var(--card);
+  border: 2px solid var(--ink);
+  padding: 1.15rem 1.2rem 0.6rem;
+  margin: 1.5rem 0;
+}
+
+.packet-kicker {
+  margin: 0 0 0.35rem;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  font-weight: 700;
+}
+
+#packet-official,
+#packet-interview-line {
+  font-weight: 650;
 }
 
 #packet-list {
-  padding-left: 1.2rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+#packet-list li {
+  margin: 0 0 0.85rem;
+}
+
+#packet-list label {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  font-weight: 400;
+  min-height: 44px;
+}
+
+#packet-list input[type="checkbox"] {
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: 0.3rem;
+  flex: 0 0 auto;
 }
 
 #packet-list p {
-  margin: 0.2rem 0 0.8rem;
+  margin: 0.2rem 0 0;
+  color: var(--muted);
 }
 
 .state-list {
@@ -207,18 +313,24 @@ footer {
   noscript {
     display: none !important;
   }
+  html,
+  body {
+    background: #fff;
+    font-size: 12pt;
+  }
   header,
   main,
   #packet {
     max-width: none;
     padding: 0;
   }
-  .lede {
+  .lede,
+  .fact {
     font-size: 11pt;
   }
-  body {
-    background: #fff;
-    font-size: 12pt;
+  .packet {
+    border-width: 1.5pt;
+    margin: 0;
   }
   a[href]::after {
     content: " (" attr(href) ")";

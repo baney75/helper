@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import html from "../index.html?raw";
 import { DISCLAIMER } from "../src/copy";
 import { PROGRAMS } from "../src/data/programs";
 import { lookupZip } from "../src/zip";
@@ -10,6 +11,19 @@ describe("disclaimer freeze", () => {
   it("is unofficial and never says eligible", () => {
     expect(DISCLAIMER).toMatch(/not a government website/i);
     expect(DISCLAIMER.toLowerCase()).not.toMatch(/\beligible\b|\bineligible\b/);
+  });
+});
+
+describe("page hooks", () => {
+  it("keeps the script targets, noscript path, and coffee link", () => {
+    expect(html).toContain('id="packet-list"');
+    expect(html).toContain('id="see-result"');
+    expect(html).toContain('type="button"');
+    expect(html).toContain("https://buymeacoffee.com/baneydonovan");
+    expect(html).toContain("<noscript>");
+    expect(html).toContain('id="see-result"');
+    expect(html).not.toMatch(/<button[^>]*type="submit"/);
+    expect(html.toLowerCase()).not.toMatch(/\beligible\b|\bineligible\b/);
   });
 });
 

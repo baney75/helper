@@ -67,15 +67,35 @@ function numberOrNull(id: string): number | null {
 function renderPacket(age: number | null): void {
   const list = $("packet-list");
   list.replaceChildren();
-  for (const item of packetItems({ age60Plus: age !== null && age >= 60 })) {
+  const age60Plus = age === null || age >= 60;
+  for (const item of packetItems({ age60Plus })) {
     const li = document.createElement("li");
+    const label = document.createElement("label");
+    const box = document.createElement("input");
+    box.type = "checkbox";
+    const wrap = document.createElement("span");
     const title = document.createElement("strong");
     title.textContent = item.title;
     const detail = document.createElement("p");
     detail.textContent = item.detail;
-    li.append(title, detail);
+    wrap.append(title, detail);
+    label.append(box, wrap);
+    li.append(label);
     list.append(li);
   }
+}
+
+function setPacketInterviewLine(): void {
+  const date = ($("interview-date") as HTMLInputElement).value;
+  const note = ($("interview-note") as HTMLInputElement).value.trim();
+  const line = $("packet-interview-line");
+  if (!date) {
+    line.textContent = "Interview date: write it here once the office sets it.";
+    return;
+  }
+  line.textContent = note
+    ? `Interview date: ${date}. ${note}`
+    : `Interview date: ${date}.`;
 }
 
 function onZip(): void {
@@ -84,7 +104,10 @@ function onZip(): void {
   const status = $("zip-status");
   if (result.kind === "state") {
     ($("state") as HTMLSelectElement).value = result.state;
-    status.textContent = `That ZIP maps to ${result.state}. If you live in another state, pick it below.`;
+    const row = programForState(result.state);
+    status.textContent = row
+      ? `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} maps to ${row.name}. Open the official pages below. If that is the wrong state, pick the right one.`
+      : `That ZIP maps to ${result.state}.`;
     setOfficialLinks(result.state);
     return;
   }
@@ -103,6 +126,7 @@ function onScreen(): void {
   });
   $("screen-headline").textContent = out.headline;
   $("screen-body").textContent = out.body;
+  $("screen-result").classList.add("has-result");
   renderPacket(age);
 }
 
@@ -114,7 +138,8 @@ function onReminderSave(): void {
     return;
   }
   saveReminder({ date, note });
-  $("reminder-status").textContent = "Saved on this device.";
+  setPacketInterviewLine();
+  $("reminder-status").textContent = "Saved on this device. It will print on the packet.";
 }
 
 function onReminderDownload(): void {
@@ -138,6 +163,7 @@ function restoreReminder(): void {
   if (!saved) return;
   ($("interview-date") as HTMLInputElement).value = saved.date;
   ($("interview-note") as HTMLInputElement).value = saved.note;
+  setPacketInterviewLine();
   $("reminder-status").textContent = "Loaded the date saved on this device.";
 }
 
@@ -146,6 +172,10 @@ fillStateSelect();
 ($("fns-directory") as HTMLAnchorElement).href = FNS_DIRECTORY;
 $("zip").addEventListener("change", onZip);
 $("zip").addEventListener("blur", onZip);
+$("zip").addEventListener("input", () => {
+  const digits = ($("zip") as HTMLInputElement).value.replace(/\D/g, "");
+  if (digits.length >= 5) onZip();
+});
 $("state").addEventListener("change", () => setOfficialLinks(currentState()));
 $("see-result").addEventListener("click", onScreen);
 $("screen-form").addEventListener("submit", (event) => {
@@ -154,5 +184,8 @@ $("screen-form").addEventListener("submit", (event) => {
 $("save-reminder").addEventListener("click", onReminderSave);
 $("download-ics").addEventListener("click", onReminderDownload);
 $("print-packet").addEventListener("click", () => window.print());
+$("interview-date").addEventListener("input", setPacketInterviewLine);
+$("interview-note").addEventListener("input", setPacketInterviewLine);
 restoreReminder();
 renderPacket(null);
+setPacketInterviewLine();
