@@ -31,8 +31,9 @@ describe("page hooks", () => {
     expect(html).toContain('id="step-next"');
     expect(html).toContain('id="skip-screen"');
     expect(html).toContain('id="open-screen"');
-    expect(html).toContain('id="scroll-down"');
-    expect(html).toContain("Start here");
+    expect(html).not.toContain('id="scroll-down"');
+    expect(html).toContain("Your ZIP");
+    expect(html).toContain("legal-scroll");
     expect(html).toContain("1 of 3");
     expect(html).not.toContain('name="age"');
     expect(html).not.toContain('name="income"');
@@ -223,7 +224,9 @@ describe("steps", () => {
     expect(hashStep("#packet")).toBe("packet");
     expect(hashStep("#nope")).toBeNull();
     expect(hashStep("")).toBeNull();
-    expect(continueLabel("pages")).toBe("Continue to papers");
+    expect(continueLabel("pages")).toBe("Papers");
+    expect(continueLabel("packet")).toBe("Dates");
+    expect(continueLabel("interview")).toBe("Print");
   });
 });
 

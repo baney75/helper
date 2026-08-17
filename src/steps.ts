@@ -51,7 +51,14 @@ export function hashStep(hash: string): Step | null {
 
 export function continueLabel(step: Step): string {
   const upcoming = nextStep(step);
-  if (!upcoming) return "Print packet";
+  if (!upcoming) return "Print";
+  if (upcoming === "packet") return "Papers";
+  return "Dates";
+}
+
+export function continueAria(step: Step): string {
+  const upcoming = nextStep(step);
+  if (!upcoming) return "Print this packet";
   if (upcoming === "packet") return "Continue to papers";
   return "Continue to dates";
 }

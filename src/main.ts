@@ -7,7 +7,7 @@ import { watchNetwork } from "./online";
 import {
   calendarMonth,
   energyButtonFallback,
-  energySeasonCopy,
+  energySeasonShort,
   packetSeasonLine,
 } from "./season";
 import {
@@ -16,7 +16,7 @@ import {
   saveProgress,
   type Progress,
 } from "./progress";
-import { continueLabel, hashStep, nextStep, persistableStep, prevStep, stepLabel, type Step } from "./steps";
+import { continueAria, continueLabel, hashStep, nextStep, persistableStep, prevStep, stepLabel, type Step } from "./steps";
 
 function $(id: string): HTMLElement {
   const el = document.getElementById(id);
@@ -56,20 +56,14 @@ function setOfficialLinks(code: string): void {
   const packetSnap = $("packet-snap-link") as HTMLAnchorElement;
   const packetLiheap = $("packet-liheap-link") as HTMLAnchorElement;
   if (!row) {
-    bindOfficial(snap, FNS_DIRECTORY, "Official SNAP state directory");
+    bindOfficial(snap, FNS_DIRECTORY, "Official SNAP directory");
     bindOfficial(liheap, ENERGYHELP, energyButtonFallback(monthNow));
     bindOfficial(packetSnap, FNS_DIRECTORY, "FNS SNAP state directory");
     bindOfficial(packetLiheap, ENERGYHELP, "Energyhelp search");
     return;
   }
-  bindOfficial(
-    snap,
-    row.snapApplyUrl,
-    row.snapOnline
-      ? `Official SNAP apply or how-to page for ${row.name}`
-      : `Official SNAP how-to page for ${row.name}`,
-  );
-  bindOfficial(liheap, row.liheapUrl, `Official energy help page for ${row.name}`);
+  bindOfficial(snap, row.snapApplyUrl, `Open SNAP · ${row.name}`);
+  bindOfficial(liheap, row.liheapUrl, `Energy help · ${row.name}`);
   bindOfficial(packetSnap, row.snapApplyUrl, `${row.name} SNAP page`);
   bindOfficial(packetLiheap, row.liheapUrl, `${row.name} energy help page`);
   $("liheap-note").textContent = `${row.energyHelpNote} National referral: ${NEAR_PHONE}. Or search by state at Energyhelp.`;
@@ -194,6 +188,9 @@ function setPacketInterviewLine(): void {
 
 function showStep(step: Step, mode: "push" | "replace" | "hash"): void {
   current = step;
+  document.body.dataset.step = step;
+  const legal = document.querySelector("details.legal");
+  if (legal instanceof HTMLDetailsElement) legal.open = false;
   for (const section of Array.from(document.querySelectorAll<HTMLElement>("section.step"))) {
     const match = section.dataset.step === step;
     section.classList.toggle("is-off", !match);
@@ -206,11 +203,11 @@ function showStep(step: Step, mode: "push" | "replace" | "hash"): void {
   const previous = prevStep(step);
   back.disabled = previous === null;
   next.textContent = continueLabel(step);
+  next.setAttribute("aria-label", continueAria(step));
   syncContinue();
   const heading = document.querySelector<HTMLElement>(`section.step[data-step="${step}"] h2`);
-  window.scrollTo(0, 0);
-  heading?.focus();
-  window.requestAnimationFrame(syncScrollCue);
+  if (step === "pages") input("zip").focus({ preventScroll: true });
+  else heading?.focus({ preventScroll: true });
   const hash = `#${step}`;
   if (mode === "hash") return;
   if (mode === "replace") {
@@ -234,11 +231,11 @@ function onZip(): void {
     const shown = programForState(currentState());
     if (picked && picked !== result.state && shown) {
       status.textContent = row
-        ? `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} maps to ${row.name}. You picked ${shown.name}. Official pages follow ${shown.name}.`
-        : `That ZIP maps to ${result.state}. Official pages follow the state you picked.`;
+        ? `ZIP maps to ${row.name}. You picked ${shown.name}. Pages follow ${shown.name}.`
+        : `That ZIP maps to ${result.state}. Pages follow the state you picked.`;
     } else {
       status.textContent = row
-        ? `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} maps to ${row.name}. Open the official pages below. If that is the wrong state, pick the right one.`
+        ? `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} is ${row.name}. Open the official page.`
         : `That ZIP maps to ${result.state}.`;
       setOfficialLinks(currentState() || result.state);
     }
@@ -255,27 +252,6 @@ function syncContinue(): void {
   next.disabled = needsState && !currentState();
 }
 
-function scrollTarget(): HTMLElement | null {
-  return document.querySelector("section.step:not(.is-off) .field") ?? document.querySelector("section.step:not(.is-off) h2");
-}
-
-function syncScrollCue(): void {
-  const btn = $("scroll-down") as HTMLButtonElement;
-  const target = scrollTarget();
-  if (!target) {
-    btn.hidden = true;
-    return;
-  }
-  const rect = target.getBoundingClientRect();
-  const chrome = document.querySelector(".chrome");
-  const floor = window.innerHeight - (chrome ? chrome.getBoundingClientRect().height : 0) - 12;
-  btn.hidden = rect.top < floor && rect.bottom > 64;
-}
-
-function onScrollDown(): void {
-  scrollTarget()?.scrollIntoView({ block: "center", behavior: "smooth" });
-}
-
 function onScreen(): void {
   const age = numberOrNull("age");
   const out = screenOlderAdult({
@@ -290,7 +266,7 @@ function onScreen(): void {
   $("screen-body").textContent = out.body;
   $("screen-result").classList.add("has-result");
   renderPacket(age, checkedPacketIds());
-  persist(true);
+  persist(false);
 }
 
 function onReminderSave(): void {
@@ -470,9 +446,6 @@ $("path-recert").addEventListener("click", () => {
   persist(false);
 });
 $("clear-device").addEventListener("click", resetDevice);
-$("scroll-down").addEventListener("click", onScrollDown);
-window.addEventListener("scroll", syncScrollCue, { passive: true });
-window.addEventListener("resize", syncScrollCue);
 window.addEventListener("hashchange", () => {
   const step = hashStep(location.hash);
   if (!step) return;
@@ -484,9 +457,17 @@ watchNetwork((online) => {
   $("net-banner").hidden = online;
 });
 restore();
-$("now-energy").textContent = energySeasonCopy(monthNow);
+$("now-energy").textContent = energySeasonShort(monthNow);
 $("packet-season").textContent = packetSeasonLine(monthNow);
-syncScrollCue();
+
+function syncViewport(): void {
+  const viewport = window.visualViewport;
+  const height = viewport?.height ?? window.innerHeight;
+  document.documentElement.style.setProperty("--vvh", `${Math.round(height)}px`);
+}
+syncViewport();
+window.visualViewport?.addEventListener("resize", syncViewport);
+window.addEventListener("resize", syncViewport);
 
 if (import.meta.env.PROD) {
   void import("./pwa").then(({ startPwa }) => {

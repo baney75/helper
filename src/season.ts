@@ -24,6 +24,13 @@ export function energySeasonCopy(month: number): string {
   return "Energy help is seasonal. Ask the official page whether cooling, crisis, or heating intake is open now. Money can run out. If the page is closed, call 2-1-1 or 1-866-674-6327.";
 }
 
+export function energySeasonShort(month: number): string {
+  const season = energySeason(month);
+  if (season === "heating") return "This month: heating help. Money can run out.";
+  if (season === "cooling") return "This month: cooling or crisis help.";
+  return "Energy help is seasonal. Money can run out.";
+}
+
 export function energyButtonFallback(month: number): string {
   const season = energySeason(month);
   if (season === "heating") return "Official heating or energy help";
