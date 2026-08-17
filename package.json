@@ -1,0 +1,20 @@
+{
+  "name": "helper",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Unofficial SNAP and LIHEAP packet helper for people 60 and older.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3",
+    "vitest": "^3.2.4"
+  }
+}

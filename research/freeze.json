@@ -1,0 +1,13 @@
+{
+  "retrieved": "2026-08-17",
+  "scope": "50 states + DC",
+  "snapIncome": "FNS FY2026 monthly COLA, not HHS calendar 2026 FPL",
+  "screenOutputs": ["likely_worth_applying", "maybe", "probably_not"],
+  "energyHelp": "https://liheapch.acf.hhs.gov/search-tool",
+  "nearPhone": "1-866-674-6327",
+  "fnsDirectory": "https://www.fns.usda.gov/snap/state-directory",
+  "legal": {
+    "counselRetained": false,
+    "note": "Adversarial copy review only. No bar-admitted counsel retained. Product never says eligible or ineligible and does not file applications."
+  }
+}
