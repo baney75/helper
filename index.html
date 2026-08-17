@@ -43,29 +43,18 @@
     <header>
       <p class="kicker">Unofficial helper</p>
       <h1>Helper</h1>
-      <p class="lede">Food help is open all year. Get to the official page. Bring the papers. Keep the date.</p>
+      <p class="lede">Food help is open all year. Type your ZIP. We will show the official page.</p>
     </header>
     <main id="main">
       <p class="trust no-print">Not a government website. It does not decide if you qualify. It does not file an application.</p>
       <details class="legal no-print">
-        <summary>Read the full disclaimer</summary>
+        <summary>Full disclaimer and privacy</summary>
         <p id="disclaimer-text">This site is an unofficial helper. It is not a government website. It is not affiliated with USDA, HHS, FNS, ACF, or any state agency. This site does not decide if you qualify. It does not file an application for you. Only your state agency can accept an application and decide your case. This site is not legal advice and not a substitute for talking with your local SNAP or LIHEAP office. Program rules differ by state and can change. If this site conflicts with an official notice, application, or worker, follow the official source.</p>
         <p id="privacy-text">Your answers stay in this browser on this device. This helper does not create an account. It does not send your answers to a server. If you download a reminder file or print a packet, that file is yours to keep or delete. When the internet is back, this page can update itself. Your answers still do not leave the device.</p>
       </details>
 
-      <nav class="chrome no-print" aria-label="Steps">
-        <p id="step-status">1 of 3 · Food help</p>
-        <div class="actions">
-          <button type="button" id="step-back" class="secondary">Back</button>
-          <button type="button" id="step-next">Continue to papers</button>
-          <button type="button" id="clear-device" class="secondary">Erase</button>
-        </div>
-      </nav>
-
       <section id="step-pages" class="hero step no-print" data-step="pages">
-        <h2 tabindex="-1">1. Food help, then energy help</h2>
-        <p class="hint">SNAP is open all year. Type a ZIP. The official apply page for that state appears. Energy programs open and close with the seasons. If you already know the state, pick it from the list.</p>
-        <p id="now-energy" class="now">Energy help is seasonal. Ask the official page what is open now. Money can run out. A national referral line is 1-866-674-6327.</p>
+        <h2 tabindex="-1">Start here</h2>
         <div class="row two">
           <div class="field">
             <label for="zip">ZIP code</label>
@@ -83,6 +72,8 @@
           <a id="snap-link" class="button" href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer">Official SNAP directory</a>
           <a id="liheap-link" class="button secondary" href="https://liheapch.acf.hhs.gov/search-tool" target="_blank" rel="noopener noreferrer">Official energy help search</a>
         </div>
+        <p class="hint">SNAP is open all year. Energy programs open and close with the seasons. If you already know the state, pick it from the list.</p>
+        <p id="now-energy" class="now">Energy help is seasonal. Ask the official page what is open now. Money can run out. A national referral line is 1-866-674-6327.</p>
         <p id="liheap-note">
           LIHEAP is a block grant. States set rules and funds can run out. A
           national referral line is 1-866-674-6327.
@@ -264,6 +255,15 @@
         <a href="https://buymeacoffee.com/baneydonovan">buy Donovan a coffee</a>.
       </p>
     </footer>
+    <button type="button" id="scroll-down" class="scroll-down no-print" hidden>Scroll down</button>
+    <nav class="chrome no-print" aria-label="Steps">
+      <p id="step-status">1 of 3 · Food help</p>
+      <div class="actions">
+        <button type="button" id="step-back" class="secondary">Back</button>
+        <button type="button" id="step-next">Continue to papers</button>
+        <button type="button" id="clear-device" class="secondary">Erase</button>
+      </div>
+    </nav>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -210,6 +210,7 @@ function showStep(step: Step, mode: "push" | "replace" | "hash"): void {
   const heading = document.querySelector<HTMLElement>(`section.step[data-step="${step}"] h2`);
   window.scrollTo(0, 0);
   heading?.focus();
+  window.requestAnimationFrame(syncScrollCue);
   const hash = `#${step}`;
   if (mode === "hash") return;
   if (mode === "replace") {
@@ -252,6 +253,27 @@ function syncContinue(): void {
   const next = $("step-next") as HTMLButtonElement;
   const needsState = current === "pages" || current === "screen";
   next.disabled = needsState && !currentState();
+}
+
+function scrollTarget(): HTMLElement | null {
+  return document.querySelector("section.step:not(.is-off) .field") ?? document.querySelector("section.step:not(.is-off) h2");
+}
+
+function syncScrollCue(): void {
+  const btn = $("scroll-down") as HTMLButtonElement;
+  const target = scrollTarget();
+  if (!target) {
+    btn.hidden = true;
+    return;
+  }
+  const rect = target.getBoundingClientRect();
+  const chrome = document.querySelector(".chrome");
+  const floor = window.innerHeight - (chrome ? chrome.getBoundingClientRect().height : 0) - 12;
+  btn.hidden = rect.top < floor && rect.bottom > 64;
+}
+
+function onScrollDown(): void {
+  scrollTarget()?.scrollIntoView({ block: "center", behavior: "smooth" });
 }
 
 function onScreen(): void {
@@ -448,6 +470,9 @@ $("path-recert").addEventListener("click", () => {
   persist(false);
 });
 $("clear-device").addEventListener("click", resetDevice);
+$("scroll-down").addEventListener("click", onScrollDown);
+window.addEventListener("scroll", syncScrollCue, { passive: true });
+window.addEventListener("resize", syncScrollCue);
 window.addEventListener("hashchange", () => {
   const step = hashStep(location.hash);
   if (!step) return;
@@ -461,6 +486,7 @@ watchNetwork((online) => {
 restore();
 $("now-energy").textContent = energySeasonCopy(monthNow);
 $("packet-season").textContent = packetSeasonLine(monthNow);
+syncScrollCue();
 
 if (import.meta.env.PROD) {
   void import("./pwa").then(({ startPwa }) => {
@@ -470,6 +496,9 @@ if (import.meta.env.PROD) {
         const banner = $("update-banner");
         banner.hidden = false;
         banner.textContent = "This helper will keep working if the internet drops. Official apply pages still need the internet.";
+        window.setTimeout(() => {
+          if (!saveFailed) banner.hidden = true;
+        }, 5000);
       },
       onUpdated: () => {
         const banner = $("update-banner");

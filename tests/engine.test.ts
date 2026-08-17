@@ -31,7 +31,8 @@ describe("page hooks", () => {
     expect(html).toContain('id="step-next"');
     expect(html).toContain('id="skip-screen"');
     expect(html).toContain('id="open-screen"');
-    expect(html).toContain('id="path-recert"');
+    expect(html).toContain('id="scroll-down"');
+    expect(html).toContain("Start here");
     expect(html).toContain("1 of 3");
     expect(html).not.toContain('name="age"');
     expect(html).not.toContain('name="income"');
