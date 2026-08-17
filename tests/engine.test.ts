@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import html from "../index.html?raw";
+import css from "../src/styles.css?raw";
 import { DISCLAIMER } from "../src/copy";
 import { PROGRAMS } from "../src/data/programs";
 import { lookupZip } from "../src/zip";
@@ -24,6 +25,8 @@ describe("page hooks", () => {
     expect(html).toContain('id="see-result"');
     expect(html).not.toMatch(/<button[^>]*type="submit"/);
     expect(html.toLowerCase()).not.toMatch(/\beligible\b|\bineligible\b/);
+    expect(html).not.toMatch(/It does\s*\n\s+not file/);
+    expect(css).not.toMatch(/pre-wrap/);
   });
 });
 

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Helper: emails and DMs to send</title>
+    <style>
+      :root {
+        --ink: #161410;
+        --paper: #f7f3ea;
+        --line: #d8d0c4;
+        --navy: #1c3d5a;
+        --muted: #534e46;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font: 1.125rem/1.45 ui-sans-serif, system-ui, sans-serif;
+      }
+      main {
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 5rem;
+      }
+      h1 {
+        font-size: 2rem;
+        line-height: 1.15;
+        margin: 0 0 0.75rem;
+      }
+      h2 {
+        font-size: 1.2rem;
+        margin: 2.25rem 0 0.6rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--line);
+      }
+      p,
+      li {
+        max-width: 40rem;
+      }
+      .verdict {
+        padding: 1rem 0 0.25rem;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 1rem;
+      }
+      label {
+        display: block;
+        font-weight: 700;
+        margin: 0.75rem 0 0.35rem;
+      }
+      textarea {
+        width: 100%;
+        min-height: 11rem;
+        font: inherit;
+        padding: 0.75rem 0.85rem;
+        border: 2px solid var(--ink);
+        background: #fff;
+        resize: vertical;
+      }
+      textarea.short {
+        min-height: 7rem;
+      }
+      textarea.tall {
+        min-height: 16rem;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0.5rem 0 1.25rem;
+      }
+      button {
+        min-height: 44px;
+        padding: 0.4rem 0.85rem;
+        font: inherit;
+        font-weight: 700;
+        color: #fff;
+        background: var(--navy);
+        border: 2px solid var(--navy);
+        cursor: pointer;
+      }
+      button:focus,
+      textarea:focus {
+        outline: 3px solid #b45309;
+        outline-offset: 2px;
+      }
+      .ok {
+        color: var(--muted);
+        min-height: 1.4em;
+        margin: 0;
+      }
+      code {
+        font-size: 0.95em;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Send this, at this size</h1>
+      <div class="verdict">
+        <p>
+          This helps one person who already has a phone, a printer, or a relative
+          willing to sit down for five minutes. It finds the official SNAP page,
+          names papers to bring, and keeps the interview date on the device. It
+          does not file. It does not decide a case. It will not move the national
+          55% older-adult SNAP number by itself.
+        </p>
+        <p>
+          Send it to people who can put it in front of an older adult: family,
+          a church secretary, a librarian, 211, a SNAP outreach worker. Do not
+          send it to USDA as if you built GetCalFresh. Do not claim it feeds
+          America.
+        </p>
+        <p class="meta">
+          Live: <a href="https://baney75.github.io/helper/">https://baney75.github.io/helper/</a><br />
+          Repo: <a href="https://github.com/baney75/helper">https://github.com/baney75/helper</a><br />
+          Demo ZIP: 19103 (Pennsylvania). Alternate: 90210 (California).
+        </p>
+      </div>
+
+      <h2>X post</h2>
+      <p class="meta">Public. Honest. The demo is the ZIP box.</p>
+      <label for="x-post">Post</label>
+      <textarea id="x-post" class="tall">Type a ZIP. The official SNAP page for that state comes up. Print the papers. Save the interview date on the phone. Nothing is sent to a server.
+
+USDA, FY2022: SNAP reached about 55% of people 60 and older who could have received it, versus 88% of people overall. A missed interview is a common way an application dies.
+
+Unofficial helper, MIT, 50 states + DC:
+https://baney75.github.io/helper/</textarea>
+      <div class="row">
+        <button type="button" data-copy="x-post">Copy post</button>
+        <p class="ok" data-ok="x-post"></p>
+      </div>
+
+      <h2>X DM: someone helping a parent</h2>
+      <label for="dm-family">DM</label>
+      <textarea id="dm-family" class="short">If you're helping your mom or dad with food stamps, try this. Type their ZIP. It opens the official state SNAP page. You can print a papers list and save the interview date on the phone. It is not the government and it does not file anything.
+
+https://baney75.github.io/helper/</textarea>
+      <div class="row">
+        <button type="button" data-copy="dm-family">Copy DM</button>
+        <p class="ok" data-ok="dm-family"></p>
+      </div>
+
+      <h2>X DM: someone who works outreach</h2>
+      <label for="dm-outreach">DM</label>
+      <textarea id="dm-outreach">I made a static page for older adults applying to SNAP and energy help. ZIP to the official state page, a printable packet, interview date stored on the device. No accounts. No answers leave the browser.
+
+It will not replace a county worker. If a link is dead, tell me and I will fix it.
+
+https://baney75.github.io/helper/</textarea>
+      <div class="row">
+        <button type="button" data-copy="dm-outreach">Copy DM</button>
+        <p class="ok" data-ok="dm-outreach"></p>
+      </div>
+
+      <h2>Email: family</h2>
+      <label for="email-family-sub">Subject</label>
+      <textarea id="email-family-sub" class="short">If you're helping Dad with SNAP</textarea>
+      <label for="email-family">Body</label>
+      <textarea id="email-family" class="tall">Hi,
+
+I put up a small unofficial page for SNAP and energy help. It is not a government site. It does not decide if someone qualifies and it does not send the application.
+
+What it does: you type a ZIP, it shows the official state page, it prints a papers checklist, and it can save the interview date on that phone or computer.
+
+Live: https://baney75.github.io/helper/
+
+If you try it, use 19103 as a test. That should show Pennsylvania.
+
+Donovan</textarea>
+      <div class="row">
+        <button type="button" data-copy="email-family-sub">Copy subject</button>
+        <button type="button" data-copy="email-family">Copy body</button>
+        <p class="ok" data-ok="email-family"></p>
+      </div>
+
+      <h2>Email: librarian, church office, senior center</h2>
+      <label for="email-desk-sub">Subject</label>
+      <textarea id="email-desk-sub" class="short">Unofficial SNAP packet page for people 60 and older</textarea>
+      <label for="email-desk">Body</label>
+      <textarea id="email-desk" class="tall">Hello,
+
+I built a free, unofficial helper for people 60 and older who are applying for SNAP or energy assistance. It runs in the browser. There is no account. Answers stay on that device.
+
+The useful part is short: ZIP code to the official state apply page, a printable list of papers, and a place to save the interview date so it is not lost.
+
+It does not file an application. If it conflicts with an official notice or a worker, follow the official source.
+
+Page: https://baney75.github.io/helper/
+Source: https://github.com/baney75/helper
+
+If a link for your state is wrong or down, email me and I will correct it.
+
+Thank you,
+Donovan Baney</textarea>
+      <div class="row">
+        <button type="button" data-copy="email-desk-sub">Copy subject</button>
+        <button type="button" data-copy="email-desk">Copy body</button>
+        <p class="ok" data-ok="email-desk"></p>
+      </div>
+
+      <h2>Email: 211 or SNAP outreach</h2>
+      <label for="email-211-sub">Subject</label>
+      <textarea id="email-211-sub" class="short">Unofficial last-mile SNAP/LIHEAP page, if useful</textarea>
+      <label for="email-211">Body</label>
+      <textarea id="email-211" class="tall">Hello,
+
+I am sharing a small MIT-licensed page in case it is useful to clients 60 and older.
+
+https://baney75.github.io/helper/
+
+It points people to official SNAP and LIHEAP pages by ZIP or state, prints a generic document checklist, and can keep an interview date in the browser or as a calendar file. It does not determine eligibility and it does not submit applications. LIHEAP funds can run out even when income looks qualifying.
+
+I am not asking you to endorse it. If a URL is stale, I want to know.
+
+Donovan Baney
+https://github.com/baney75/helper</textarea>
+      <div class="row">
+        <button type="button" data-copy="email-211-sub">Copy subject</button>
+        <button type="button" data-copy="email-211">Copy body</button>
+        <p class="ok" data-ok="email-211"></p>
+      </div>
+
+      <h2>Do not send</h2>
+      <p>
+        Do not say it makes someone eligible. Do not say it is affiliated with USDA.
+        Do not say it filed the application. Do not use the 55% figure as if this
+        page already closed the gap. That number is why the last mile exists. It
+        is not proof this page moved it.
+      </p>
+    </main>
+    <script>
+      document.querySelectorAll("[data-copy]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const id = button.getAttribute("data-copy");
+          const field = document.getElementById(id);
+          const note = document.querySelector('[data-ok="' + id + '"]')
+            || button.parentElement.querySelector(".ok");
+          if (!field) return;
+          try {
+            await navigator.clipboard.writeText(field.value);
+            if (note) note.textContent = "Copied.";
+          } catch {
+            field.select();
+            document.execCommand("copy");
+            if (note) note.textContent = "Copied.";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

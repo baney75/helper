@@ -21,44 +21,23 @@
     <meta name="twitter:title" content="Helper: unofficial SNAP packet for people 60 and older" />
     <meta name="twitter:description" content="Type a ZIP. Open the official SNAP page. Print the papers. Do not miss the interview." />
     <meta name="twitter:image" content="https://baney75.github.io/helper/og.jpg" />
-    <meta name="theme-color" content="#f3ead8" />
+    <meta name="theme-color" content="#f4efe6" />
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to main content</a>
     <header>
-      <p class="stamp">Unofficial</p>
+      <p class="kicker">Unofficial helper</p>
       <h1>Helper</h1>
-      <p class="lede">
-        Get to the official SNAP page. Bring the right papers. Do not miss the
-        interview.
-      </p>
-      <p class="fact no-print">
-        USDA found that in FY2022, SNAP reached about 55% of people 60 and
-        older who could have received it, versus 88% of people overall. A
-        missed interview is a common way an application dies.
-      </p>
+      <p class="lede">Get to the official SNAP page. Bring the right papers. Do not miss the interview.</p>
     </header>
     <main id="main">
-      <section class="banner no-print" aria-label="Disclaimer">
-        <p class="stamp-line">
-          Not a government website. It does not decide if you qualify. It does
-          not file an application.
-        </p>
-        <details>
-          <summary>Full disclaimer and privacy</summary>
-          <p id="disclaimer-text">This site is an unofficial helper. It is not a government website. It is not affiliated with USDA, HHS, FNS, ACF, or any state agency.
-
-This site does not decide if you qualify. It does not file an application for you. Only your state agency can accept an application and decide your case.
-
-This site is not legal advice and not a substitute for talking with your local SNAP or LIHEAP office. Program rules differ by state and can change.
-
-If this site conflicts with an official notice, application, or worker, follow the official source.</p>
-          <p id="privacy-text">Your answers stay in this browser on this device. This helper does not create an account. It does not send your answers to a server.
-
-If you download a reminder file or print a packet, that file is yours to keep or delete.</p>
-        </details>
-      </section>
+      <p class="trust no-print">Not a government website. It does not decide if you qualify. It does not file an application.</p>
+      <details class="legal no-print">
+        <summary>Read the full disclaimer</summary>
+        <p id="disclaimer-text">This site is an unofficial helper. It is not a government website. It is not affiliated with USDA, HHS, FNS, ACF, or any state agency. This site does not decide if you qualify. It does not file an application for you. Only your state agency can accept an application and decide your case. This site is not legal advice and not a substitute for talking with your local SNAP or LIHEAP office. Program rules differ by state and can change. If this site conflicts with an official notice, application, or worker, follow the official source.</p>
+        <p id="privacy-text">Your answers stay in this browser on this device. This helper does not create an account. It does not send your answers to a server. If you download a reminder file or print a packet, that file is yours to keep or delete.</p>
+      </details>
 
       <section class="hero no-print">
         <h2>1. Your official pages</h2>
@@ -124,15 +103,12 @@ If you download a reminder file or print a packet, that file is yours to keep or
       </section>
 
       <section id="packet" class="packet">
-        <p class="packet-kicker">Unofficial draft · not a government form</p>
+        <p class="packet-kicker">Unofficial draft. Not a government form.</p>
         <h2>3. Papers to bring to the interview</h2>
-        <p id="packet-intro">This packet is a helper draft. It is not an official form. Your state may ask for different papers.
-
-Bring what you have. If you are missing a paper, still go to the interview or complete the phone interview. Ask the worker how they can help you get proof. The office must give you at least 10 days to turn in papers they ask for.
-
-SNAP usually requires an interview. In most cases the office has 30 days from the date it got your application to decide your case. If you miss the interview, the office should send a missed-interview notice. Call the number on your notice and ask to reschedule. If you do not reschedule during those 30 days, the office can deny the application on day 30.
-
-Apply on the official state site linked in this packet. Open those links in a new tab. They are government sites. This helper is not.</p>
+        <p>This packet is a helper draft. It is not an official form. Your state may ask for different papers.</p>
+        <p>Bring what you have. If you are missing a paper, still go to the interview or complete the phone interview. Ask the worker how they can help you get proof. The office must give you at least 10 days to turn in papers they ask for.</p>
+        <p>SNAP usually requires an interview. In most cases the office has 30 days from the date it got your application to decide your case. If you miss the interview, the office should send a missed-interview notice. Call the number on your notice and ask to reschedule. If you do not reschedule during those 30 days, the office can deny the application on day 30.</p>
+        <p>Apply on the official state site linked in this packet. Open those links in a new tab. They are government sites. This helper is not.</p>
         <p id="packet-official">
           Official SNAP page:
           <a id="packet-snap-link" href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer">FNS SNAP state directory</a>.
@@ -171,7 +147,7 @@ Apply on the official state site linked in this packet. Open those links in a ne
       </section>
 
       <noscript>
-        <section class="banner">
+        <section>
           <h2>JavaScript is off</h2>
           <p>
             This helper still works as a link list. It cannot run the ZIP lookup
@@ -234,6 +210,9 @@ Apply on the official state site linked in this packet. Open those links in a ne
       </noscript>
     </main>
     <footer class="no-print">
+      <p class="fact">
+        USDA found that in FY2022, SNAP reached about 55% of people 60 and older who could have received it, versus 88% of people overall. A missed interview is a common way an application dies.
+      </p>
       <p>
         MIT licensed. Sources are listed in the repository.
         <a href="https://www.fns.usda.gov/snap/state-directory" id="fns-directory" target="_blank" rel="noopener noreferrer">FNS SNAP directory</a>.
