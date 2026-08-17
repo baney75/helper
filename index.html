@@ -6,7 +6,7 @@
     <title>Helper: unofficial SNAP packet for people 60 and older</title>
     <meta
       name="description"
-      content="Type a ZIP. Open the official SNAP page for your state. Print the papers list. Keep the interview date on this device. Not a government website."
+      content="Type a ZIP. Open the official SNAP page any month of the year. Print the papers. Keep the interview or recert date on this device. Not a government website."
     />
     <link rel="canonical" href="https://baney75.github.io/helper/" />
     <meta property="og:type" content="website" />
@@ -22,34 +22,58 @@
     <meta name="twitter:description" content="Type a ZIP. Open the official SNAP page. Print the papers. Do not miss the interview." />
     <meta name="twitter:image" content="https://baney75.github.io/helper/og.jpg" />
     <meta name="theme-color" content="#f4efe6" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <link rel="icon" href="./icon.svg" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Helper" />
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to main content</a>
+    <div class="banners no-print" aria-live="polite">
+      <p id="net-banner" hidden>You are offline. This helper still works for the packet and the interview date. Official apply pages need the internet.</p>
+      <p id="save-banner" hidden>Saved on this device.</p>
+      <p id="update-banner" hidden>Helper updated. Your answers are still on this device.</p>
+    </div>
     <header>
       <p class="kicker">Unofficial helper</p>
       <h1>Helper</h1>
-      <p class="lede">Get to the official SNAP page. Bring the right papers. Do not miss the interview.</p>
+      <p class="lede">Food help is open all year. Get to the official page. Bring the papers. Keep the date.</p>
     </header>
     <main id="main">
       <p class="trust no-print">Not a government website. It does not decide if you qualify. It does not file an application.</p>
       <details class="legal no-print">
         <summary>Read the full disclaimer</summary>
         <p id="disclaimer-text">This site is an unofficial helper. It is not a government website. It is not affiliated with USDA, HHS, FNS, ACF, or any state agency. This site does not decide if you qualify. It does not file an application for you. Only your state agency can accept an application and decide your case. This site is not legal advice and not a substitute for talking with your local SNAP or LIHEAP office. Program rules differ by state and can change. If this site conflicts with an official notice, application, or worker, follow the official source.</p>
-        <p id="privacy-text">Your answers stay in this browser on this device. This helper does not create an account. It does not send your answers to a server. If you download a reminder file or print a packet, that file is yours to keep or delete.</p>
+        <p id="privacy-text">Your answers stay in this browser on this device. This helper does not create an account. It does not send your answers to a server. If you download a reminder file or print a packet, that file is yours to keep or delete. When the internet is back, this page can update itself. Your answers still do not leave the device.</p>
       </details>
 
-      <section class="hero no-print">
-        <h2>1. Your official pages</h2>
-        <p class="hint">Type a ZIP. The official apply page for that state appears. If you already know the state, pick it from the list.</p>
+      <nav class="chrome no-print" aria-label="Steps">
+        <p id="step-status">1 of 3 · Food help</p>
+        <div class="actions">
+          <button type="button" id="step-back" class="secondary">Back</button>
+          <button type="button" id="step-next">Continue to papers</button>
+          <button type="button" id="clear-device" class="secondary">Erase</button>
+        </div>
+      </nav>
+
+      <section id="step-pages" class="hero step no-print" data-step="pages">
+        <h2 tabindex="-1">1. Food help, then energy help</h2>
+        <p class="hint">SNAP is open all year. Type a ZIP. The official apply page for that state appears. Energy programs open and close with the seasons. If you already know the state, pick it from the list.</p>
+        <p id="now-energy" class="now">Energy help is seasonal. Ask the official page what is open now. Money can run out. A national referral line is 1-866-674-6327.</p>
         <div class="row two">
           <div class="field">
             <label for="zip">ZIP code</label>
-            <input id="zip" name="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="10" />
+            <input id="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="10" />
           </div>
           <div class="field">
             <label for="state">State or D.C.</label>
-            <select id="state" name="state">
+            <select id="state">
               <option value="">Pick a state</option>
             </select>
           </div>
@@ -63,37 +87,45 @@
           LIHEAP is a block grant. States set rules and funds can run out. A
           national referral line is 1-866-674-6327.
         </p>
+        <p class="hint">
+          <button type="button" id="path-recert" class="secondary">I already get SNAP. Save my recert date.</button>
+        </p>
+        <p class="hint">
+          <button type="button" id="open-screen" class="linkish">Optional: unofficial SNAP screen</button>
+        </p>
       </section>
 
-      <section class="no-print">
-        <h2>2. A rough screen, not a decision</h2>
-        <form id="screen-form" action="#" method="dialog" onsubmit="return false">
+      <section id="step-screen" class="step no-print is-off" data-step="screen">
+        <h2 tabindex="-1">Optional. A rough screen, not a decision</h2>
+        <p class="hint">Skip this if you just want the papers. This is not a determination. Only your state office can decide a case.</p>
+        <form id="screen-form" action="#" method="dialog">
           <div class="row two">
             <div class="field">
               <label for="age">Your age</label>
-              <input id="age" name="age" type="number" min="0" max="120" />
+              <input id="age" type="number" min="0" max="120" />
             </div>
             <div class="field">
               <label for="household">People in the SNAP household</label>
-              <input id="household" name="household" type="number" min="1" max="20" />
+              <input id="household" type="number" min="1" max="20" />
             </div>
           </div>
           <div class="row two">
             <div class="field">
               <label for="income">Gross monthly income, dollars</label>
-              <input id="income" name="income" type="number" min="0" step="1" />
+              <input id="income" type="number" min="0" step="1" />
             </div>
             <div class="field">
               <label for="resources">Countable cash or bank savings, if you know</label>
-              <input id="resources" name="resources" type="number" min="0" step="1" />
+              <input id="resources" type="number" min="0" step="1" />
             </div>
           </div>
           <label class="check">
-            <input id="shelter" name="shelter" type="checkbox" />
-            <span>High rent, heat, or medical bills (over $35 a month)</span>
+            <input id="shelter" type="checkbox" />
+            <span>High rent, utilities, or medical bills (over $35 a month)</span>
           </label>
           <div class="actions">
             <button type="button" id="see-result">See the unofficial result</button>
+            <button type="button" id="skip-screen" class="secondary">Skip. Go to the papers.</button>
           </div>
         </form>
         <div id="screen-result" aria-live="polite">
@@ -102,13 +134,14 @@
         </div>
       </section>
 
-      <section id="packet" class="packet">
+      <section id="step-packet" class="packet step is-off" data-step="packet">
         <p class="packet-kicker">Unofficial draft. Not a government form.</p>
-        <h2>3. Papers to bring to the interview</h2>
+        <h2 tabindex="-1">2. Papers to bring</h2>
         <p>This packet is a helper draft. It is not an official form. Your state may ask for different papers.</p>
         <p>Bring what you have. If you are missing a paper, still go to the interview or complete the phone interview. Ask the worker how they can help you get proof. The office must give you at least 10 days to turn in papers they ask for.</p>
         <p>SNAP usually requires an interview. In most cases the office has 30 days from the date it got your application to decide your case. If you miss the interview, the office should send a missed-interview notice. Call the number on your notice and ask to reschedule. If you do not reschedule during those 30 days, the office can deny the application on day 30.</p>
         <p>Apply on the official state site linked in this packet. Open those links in a new tab. They are government sites. This helper is not.</p>
+        <p id="packet-season"></p>
         <p id="packet-official">
           Official SNAP page:
           <a id="packet-snap-link" href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer">FNS SNAP state directory</a>.
@@ -122,16 +155,24 @@
         </div>
       </section>
 
-      <section class="no-print">
-        <h2>4. Put the interview on this device</h2>
+      <section id="step-interview" class="step no-print is-off" data-step="interview">
+        <h2 tabindex="-1">3. Keep the date</h2>
         <p>
-          The interview is where SNAP is often lost. Save the date here. It
-          stays on this computer or phone. Download a calendar file if you want
-          it on the lock screen too.
+          SNAP interviews and recertification dates are how people lose food help,
+          any month of the year. Save the date here. It stays on this computer
+          or phone. Download a calendar file if you want it on the lock screen too.
         </p>
+        <div class="field">
+          <label for="reminder-kind">What date is this?</label>
+          <select id="reminder-kind">
+            <option value="interview">SNAP interview</option>
+            <option value="recert">SNAP recertification or renewal</option>
+            <option value="energy">Energy-help appointment</option>
+          </select>
+        </div>
         <div class="row two">
           <div class="field">
-            <label for="interview-date">Interview date</label>
+            <label for="interview-date">Date</label>
             <input id="interview-date" type="date" />
           </div>
           <div class="field">

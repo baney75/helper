@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest";
 import html from "../index.html?raw";
 import css from "../src/styles.css?raw";
+import mainSrc from "../src/main.ts?raw";
 import { DISCLAIMER } from "../src/copy";
 import { PROGRAMS } from "../src/data/programs";
 import { lookupZip } from "../src/zip";
 import { screenOlderAdult } from "../src/screen";
 import { packetItems } from "../src/packet";
-import { icsForReminder } from "../src/reminder";
+import { continueLabel, hashStep, nextStep, parseStep, persistableStep, prevStep, stepLabel } from "../src/steps";
+import { icsFilename, icsForReminder } from "../src/reminder";
+import { energySeason, energySeasonCopy, SNAP_YEAR_ROUND } from "../src/season";
+import { parseProgress, saveProgress, loadProgress, clearProgress, PROGRESS_KEY, EMPTY_PROGRESS } from "../src/progress";
 
 describe("disclaimer freeze", () => {
   it("is unofficial and never says eligible", () => {
@@ -23,10 +27,24 @@ describe("page hooks", () => {
     expect(html).toContain("https://buymeacoffee.com/baneydonovan");
     expect(html).toContain("<noscript>");
     expect(html).toContain('id="see-result"');
+    expect(html).toContain('id="step-back"');
+    expect(html).toContain('id="step-next"');
+    expect(html).toContain('id="skip-screen"');
+    expect(html).toContain('id="open-screen"');
+    expect(html).toContain('id="path-recert"');
+    expect(html).toContain("1 of 3");
+    expect(html).not.toContain('name="age"');
+    expect(html).not.toContain('name="income"');
+    expect(html).toContain("open all year");
+    expect(html).toContain("Content-Security-Policy");
+    expect(html).toContain("form-action 'none'");
+    expect(html).not.toContain("onsubmit=");
     expect(html).not.toMatch(/<button[^>]*type="submit"/);
     expect(html.toLowerCase()).not.toMatch(/\beligible\b|\bineligible\b/);
     expect(html).not.toMatch(/It does\s*\n\s+not file/);
     expect(css).not.toMatch(/pre-wrap/);
+    expect(mainSrc).not.toMatch(/\bfetch\s*\(/);
+    expect(mainSrc).not.toMatch(/sendBeacon|XMLHttpRequest|gtag|analytics/i);
   });
 });
 
@@ -180,5 +198,110 @@ describe("packet and reminder", () => {
     expect(ics).toContain("BEGIN:VEVENT");
     expect(ics).toContain("DTSTART;VALUE=DATE:20260901");
     expect(ics).toContain("Call the county");
+    expect(icsForReminder({ date: "2026-09-01", note: "", kind: "recert" })).toContain(
+      "SNAP recertification reminder",
+    );
+    expect(icsFilename("recert")).toBe("snap-recert.ics");
+  });
+});
+
+describe("steps", () => {
+  it("parses hashes and walks back and continue", () => {
+    expect(parseStep("#packet")).toBe("packet");
+    expect(parseStep("interview")).toBe("interview");
+    expect(parseStep("#nope")).toBe("pages");
+    expect(prevStep("pages")).toBeNull();
+    expect(nextStep("pages")).toBe("packet");
+    expect(nextStep("screen")).toBe("packet");
+    expect(nextStep("interview")).toBeNull();
+    expect(prevStep("packet")).toBe("pages");
+    expect(prevStep("interview")).toBe("packet");
+    expect(stepLabel("screen")).toBe("Optional screen");
+    expect(stepLabel("pages")).toBe("1 of 3 · Food help");
+    expect(persistableStep("screen")).toBe("pages");
+    expect(hashStep("#packet")).toBe("packet");
+    expect(hashStep("#nope")).toBeNull();
+    expect(hashStep("")).toBeNull();
+    expect(continueLabel("pages")).toBe("Continue to papers");
+  });
+});
+
+describe("progress", () => {
+  it("roundtrips answers and ignores junk", () => {
+    const store = new Map<string, string>();
+    const fake = {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        store.set(key, value);
+      },
+      removeItem: (key: string) => {
+        store.delete(key);
+      },
+    };
+    const ok = saveProgress(
+      {
+        v: 1,
+        step: "packet",
+        zip: "19103",
+        state: "PA",
+        age: "72",
+        household: "1",
+        income: "900",
+        resources: "200",
+        shelter: true,
+        checked: ["id", "rent"],
+        interviewDate: "2026-09-01",
+        interviewNote: "Call the county",
+        reminderKind: "recert",
+        screenHeadline: "Worth applying",
+        screenBody: "Unofficial.",
+      },
+      fake,
+    );
+    expect(ok).toBe(true);
+    expect(loadProgress(fake)?.zip).toBe("19103");
+    expect(loadProgress(fake)?.checked).toEqual(["id", "rent"]);
+    expect(loadProgress(fake)?.reminderKind).toBe("recert");
+    expect(
+      saveProgress(EMPTY_PROGRESS, {
+        getItem: () => null,
+        setItem: () => {
+          throw new Error("quota");
+        },
+        removeItem: () => undefined,
+      }),
+    ).toBe(false);
+    expect(parseProgress('{"step":"nope","zip":12}')?.step).toBe("pages");
+    clearProgress(fake);
+    expect(store.has(PROGRESS_KEY)).toBe(false);
+  });
+
+  it("migrates the old interview reminder key", () => {
+    const store = new Map<string, string>();
+    const fake = {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        store.set(key, value);
+      },
+      removeItem: (key: string) => {
+        store.delete(key);
+      },
+    };
+    store.set("helper-interview-reminder", JSON.stringify({ date: "2026-10-02", note: "Phone" }));
+    const saved = loadProgress(fake);
+    expect(saved?.interviewDate).toBe("2026-10-02");
+    expect(saved?.interviewNote).toBe("Phone");
+  });
+});
+
+describe("season", () => {
+  it("keeps SNAP year-round and shifts energy copy", () => {
+    expect(SNAP_YEAR_ROUND).toMatch(/all year/);
+    expect(energySeason(8)).toBe("cooling");
+    expect(energySeason(1)).toBe("heating");
+    expect(energySeason(5)).toBe("shoulder");
+    expect(energySeasonCopy(8).toLowerCase()).toMatch(/cooling|crisis/);
+    expect(energySeasonCopy(8).toLowerCase()).not.toMatch(/\beligible\b/);
+    expect(energySeasonCopy(1).toLowerCase()).toMatch(/heating/);
   });
 });

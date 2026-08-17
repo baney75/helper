@@ -2,9 +2,11 @@
 
 Live site: https://baney75.github.io/helper/
 
-Type a ZIP. The official SNAP page for that state appears. Print a papers checklist. Save the interview date on this device.
+Type a ZIP. The official SNAP page for that state appears. Print a papers checklist. Save the interview or recertification date on this device.
 
 This is unofficial. It is not a government website. It does not decide whether you qualify, and it does not file an application. Your answers stay in the browser. There is no account.
+
+SNAP food help is open all year. Energy help is seasonal: heating is usually fall through spring; cooling or shutoff-crisis help is more often summer. Three steps: official pages, papers, then the date to keep. The unofficial screen is optional. Use Continue, Back, or the browser back button. Progress saves on this device as you type. If the internet drops, the packet and the date still work. Official apply pages need the internet. When the network is back, the page can update itself. Your answers still do not leave the device.
 
 If you already know your state, skip the ZIP box and pick it from the list.
 

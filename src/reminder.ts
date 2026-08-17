@@ -1,42 +1,32 @@
-const KEY = "helper-interview-reminder";
+export type ReminderKind = "interview" | "recert" | "energy";
 
 export type Reminder = {
   date: string;
   note: string;
+  kind?: ReminderKind;
 };
 
-function storage(): Storage | null {
-  try {
-    return window.localStorage;
-  } catch {
-    return null;
-  }
+export function isReminderKind(value: string): value is ReminderKind {
+  return value === "interview" || value === "recert" || value === "energy";
 }
 
-export function saveReminder(reminder: Reminder): void {
-  try {
-    storage()?.setItem(KEY, JSON.stringify(reminder));
-  } catch {
-    return;
-  }
+export function reminderSummary(kind: ReminderKind): string {
+  if (kind === "recert") return "SNAP recertification reminder";
+  if (kind === "energy") return "Energy-help appointment reminder";
+  return "SNAP interview reminder";
 }
 
-export function loadReminder(): Reminder | null {
-  const raw = storage()?.getItem(KEY);
-  if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw) as Reminder;
-    if (typeof parsed.date !== "string") return null;
-    return { date: parsed.date, note: typeof parsed.note === "string" ? parsed.note : "" };
-  } catch {
-    return null;
-  }
+export function icsFilename(kind: ReminderKind): string {
+  if (kind === "recert") return "snap-recert.ics";
+  if (kind === "energy") return "energy-help.ics";
+  return "snap-interview.ics";
 }
 
 export function icsForReminder(reminder: Reminder): string {
   const day = reminder.date.replaceAll("-", "");
   const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-  const desc = (reminder.note || "SNAP interview")
+  const kind = reminder.kind && isReminderKind(reminder.kind) ? reminder.kind : "interview";
+  const desc = (reminder.note || reminderSummary(kind))
     .replace(/\\/g, "\\\\")
     .replace(/\r?\n/g, "\\n")
     .replace(/,/g, "\\,")
@@ -49,7 +39,7 @@ export function icsForReminder(reminder: Reminder): string {
     `UID:helper-${day}@baney75.github.io`,
     `DTSTAMP:${stamp}`,
     `DTSTART;VALUE=DATE:${day}`,
-    `SUMMARY:SNAP interview reminder`,
+    `SUMMARY:${reminderSummary(kind)}`,
     `DESCRIPTION:${desc}`,
     "END:VEVENT",
     "END:VCALENDAR",

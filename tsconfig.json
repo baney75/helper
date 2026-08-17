@@ -9,8 +9,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "lib": ["ES2022", "DOM"],
-    "types": ["vite/client"]
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client", "vite-plugin-pwa/client"]
   },
   "include": ["src", "tests"]
 }

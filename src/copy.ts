@@ -8,7 +8,7 @@ If this site conflicts with an official notice, application, or worker, follow t
 
 export const PRIVACY = `Your answers stay in this browser on this device. This helper does not create an account. It does not send your answers to a server.
 
-If you download a reminder file or print a packet, that file is yours to keep or delete.`;
+If you download a reminder file or print a packet, that file is yours to keep or delete. When the internet is back, this page can update itself. Your answers still do not leave the device.`;
 
 export const PACKET_INTRO = `This packet is a helper draft. It is not an official form. Your state may ask for different papers.
 
