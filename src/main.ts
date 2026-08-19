@@ -325,7 +325,6 @@ function applyProgress(saved: Progress): void {
 }
 
 function resetDevice(): void {
-  if (!window.confirm("Erase the answers saved on this device?")) return;
   clearProgress();
   input("zip").value = "";
   select("state").value = "";
@@ -346,6 +345,29 @@ function resetDevice(): void {
   renderPacket(null, []);
   setPacketInterviewLine();
   showStep("pages", "replace");
+}
+
+function eraseAsk(): HTMLElement {
+  return $("erase-ask");
+}
+
+function closeEraseAsk(): void {
+  eraseAsk().hidden = true;
+  $("clear-device").focus({ preventScroll: true });
+}
+
+function openEraseAsk(): void {
+  const legal = document.querySelector("details.legal");
+  if (legal instanceof HTMLDetailsElement) legal.open = false;
+  eraseAsk().hidden = false;
+  $("erase-keep").focus({ preventScroll: true });
+}
+
+function onEraseKey(event: KeyboardEvent): void {
+  if (event.key !== "Escape") return;
+  if (eraseAsk().hidden) return;
+  event.preventDefault();
+  closeEraseAsk();
 }
 
 function onNext(): void {
@@ -445,7 +467,13 @@ $("path-recert").addEventListener("click", () => {
   showStep("interview", "push");
   persist(false);
 });
-$("clear-device").addEventListener("click", resetDevice);
+$("clear-device").addEventListener("click", openEraseAsk);
+$("erase-keep").addEventListener("click", closeEraseAsk);
+$("erase-yes").addEventListener("click", () => {
+  closeEraseAsk();
+  resetDevice();
+});
+document.addEventListener("keydown", onEraseKey);
 window.addEventListener("hashchange", () => {
   const step = hashStep(location.hash);
   if (!step) return;

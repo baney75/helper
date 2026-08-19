@@ -45,7 +45,9 @@ describe("page hooks", () => {
     expect(html.toLowerCase()).not.toMatch(/\beligible\b|\bineligible\b/);
     expect(html).not.toMatch(/It does\s*\n\s+not file/);
     expect(css).not.toMatch(/pre-wrap/);
-    expect(mainSrc).not.toMatch(/\bfetch\s*\(/);
+    expect(html).toContain('id="erase-ask"');
+    expect(html).toContain('id="erase-keep"');
+    expect(mainSrc).not.toMatch(/window\.confirm/);
     expect(mainSrc).not.toMatch(/sendBeacon|XMLHttpRequest|gtag|analytics/i);
   });
 });

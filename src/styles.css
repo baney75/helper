@@ -530,8 +530,33 @@ summary:focus {
   padding-left: 1.1rem;
 }
 
-[hidden] {
-  display: none !important;
+.erase-ask {
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-4) max(var(--space-3), env(safe-area-inset-right)) max(var(--space-4), env(safe-area-inset-bottom)) max(var(--space-3), env(safe-area-inset-left));
+  background: var(--paper);
+}
+
+.erase-ask p {
+  margin: 0;
+  max-width: 22rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.erase-ask .actions {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 22rem;
 }
 
 #net-banner {
@@ -600,6 +625,17 @@ summary:focus {
 button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+button.danger {
+  background: var(--warn);
+  border-color: var(--warn);
+  color: #fff;
+}
+
+button.danger:hover {
+  background: #5c1612;
+  border-color: #5c1612;
 }
 
 .print-only {
