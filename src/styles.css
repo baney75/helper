@@ -225,6 +225,13 @@ section {
   padding-top: 0;
 }
 
+.call {
+  margin: var(--space-1) 0 0;
+  font-weight: 650;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
 .now {
   margin: var(--space-1) 0 0;
   font-weight: 650;
@@ -507,8 +514,22 @@ summary:focus {
   line-height: 1.2;
 }
 
+#packet-list details {
+  min-width: 0;
+}
+
+#packet-list summary {
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  min-height: 2.4rem;
+  cursor: pointer;
+}
+
 #packet-list p {
-  display: none;
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 #step-screen:not(.is-off) {

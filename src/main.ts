@@ -56,13 +56,17 @@ function setOfficialLinks(code: string): void {
   const packetSnap = $("packet-snap-link") as HTMLAnchorElement;
   const packetLiheap = $("packet-liheap-link") as HTMLAnchorElement;
   if (!row) {
-    bindOfficial(snap, FNS_DIRECTORY, "Official SNAP directory");
+    bindOfficial(snap, FNS_DIRECTORY, "Open official SNAP page");
     bindOfficial(liheap, ENERGYHELP, energyButtonFallback(monthNow));
     bindOfficial(packetSnap, FNS_DIRECTORY, "FNS SNAP state directory");
     bindOfficial(packetLiheap, ENERGYHELP, "Energyhelp search");
     return;
   }
-  bindOfficial(snap, row.snapApplyUrl, `Open SNAP · ${row.name}`);
+  bindOfficial(
+    snap,
+    row.snapApplyUrl,
+    row.snapOnline ? `Open SNAP for ${row.name}` : `How to apply in ${row.name}`,
+  );
   bindOfficial(liheap, row.liheapUrl, `Energy help · ${row.name}`);
   bindOfficial(packetSnap, row.snapApplyUrl, `${row.name} SNAP page`);
   bindOfficial(packetLiheap, row.liheapUrl, `${row.name} energy help page`);
@@ -155,8 +159,8 @@ function renderPacket(age: number | null, checked: string[]): void {
     box.dataset.item = item.id;
     box.checked = checked.includes(item.id);
     box.addEventListener("change", schedulePersist);
-    const wrap = document.createElement("span");
-    const title = document.createElement("strong");
+    const wrap = document.createElement("details");
+    const title = document.createElement("summary");
     title.textContent = item.title;
     const detail = document.createElement("p");
     detail.textContent = item.detail;
@@ -231,11 +235,11 @@ function onZip(): void {
     const shown = programForState(currentState());
     if (picked && picked !== result.state && shown) {
       status.textContent = row
-        ? `ZIP maps to ${row.name}. You picked ${shown.name}. Pages follow ${shown.name}.`
-        : `That ZIP maps to ${result.state}. Pages follow the state you picked.`;
+        ? `ZIP maps to ${row.name}. You picked ${shown.name}. Tap the official page for ${shown.name}.`
+        : `That ZIP maps to ${result.state}. Tap the official page for the state you picked.`;
     } else {
       status.textContent = row
-        ? `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} is ${row.name}. Open the official page.`
+        ? `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} is ${row.name}. Tap Open SNAP. Then use Papers for what to bring.`
         : `That ZIP maps to ${result.state}.`;
       setOfficialLinks(currentState() || result.state);
     }
@@ -421,7 +425,12 @@ $("screen-form").addEventListener("submit", (event) => {
 });
 $("save-reminder").addEventListener("click", onReminderSave);
 $("download-ics").addEventListener("click", onReminderDownload);
-$("print-packet").addEventListener("click", () => window.print());
+$("print-packet").addEventListener("click", () => {
+  for (const block of Array.from(document.querySelectorAll<HTMLDetailsElement>("#packet-list details"))) {
+    block.open = true;
+  }
+  window.print();
+});
 $("interview-date").addEventListener("input", () => {
   setPacketInterviewLine();
   schedulePersist();

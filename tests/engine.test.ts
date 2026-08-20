@@ -38,6 +38,9 @@ describe("page hooks", () => {
     expect(html).not.toContain('name="age"');
     expect(html).not.toContain('name="income"');
     expect(html).toContain("open all year");
+    expect(html).toContain("packet-help");
+    expect(html).toContain("2-1-1");
+    expect(html).toContain("Open official SNAP page");
     expect(html).toContain("Content-Security-Policy");
     expect(html).toContain("form-action 'none'");
     expect(html).not.toContain("onsubmit=");

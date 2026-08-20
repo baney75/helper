@@ -43,7 +43,7 @@
     <header>
       <p class="kicker">Unofficial</p>
       <h1>Helper</h1>
-      <p class="lede">Food help is open all year. Type your ZIP.</p>
+      <p class="lede">Type your ZIP. Open your state's official food-help page.</p>
     </header>
     <main id="main">
       <p class="trust no-print">Not a government website. It does not file an application.</p>
@@ -83,9 +83,10 @@
         </div>
         <p class="status" id="zip-status" aria-live="polite"></p>
         <div class="links">
-          <a id="snap-link" class="button" href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer">Official SNAP directory</a>
+          <a id="snap-link" class="button" href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer">Open official SNAP page</a>
           <a id="liheap-link" class="linkish" href="https://liheapch.acf.hhs.gov/search-tool" target="_blank" rel="noopener noreferrer">Official energy help search</a>
         </div>
+        <p class="call">Need a person? Call 2-1-1. Food help is open all year.</p>
         <p id="now-energy" class="now">Energy help is seasonal. Money can run out.</p>
         <p id="liheap-note" hidden>
           LIHEAP is a block grant. States set rules and funds can run out. A
@@ -139,6 +140,7 @@
       <section id="step-packet" class="packet step is-off" data-step="packet">
         <p class="packet-kicker">Unofficial draft. Not a government form.</p>
         <h2 tabindex="-1">Papers to bring</h2>
+        <p id="packet-help" class="hint">Bring what you have. Still go if a paper is missing. The office must give you at least 10 days. If you miss the interview, call the number on the notice.</p>
         <div class="print-only">
         <p>This packet is a helper draft. It is not an official form. Your state may ask for different papers.</p>
         <p>Bring what you have. If you are missing a paper, still go to the interview or complete the phone interview. Ask the worker how they can help you get proof. The office must give you at least 10 days to turn in papers they ask for.</p>
@@ -160,7 +162,7 @@
 
       <section id="step-interview" class="step no-print is-off" data-step="interview">
         <h2 tabindex="-1">Keep the date</h2>
-        <p class="hint">Interviews and recert dates are how SNAP is lost. Saved here, on this device.</p>
+        <p class="hint">Save the date from the notice the office sends. Missing that date is how SNAP is lost. It stays on this device.</p>
         <div class="field">
           <label for="reminder-kind">What date is this?</label>
           <select id="reminder-kind">
