@@ -22,6 +22,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   background: var(--paper);
   color: var(--ink);
@@ -558,6 +562,7 @@ summary:focus {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: var(--space-3);
   margin: 0;
   padding: var(--space-4) max(var(--space-3), env(safe-area-inset-right)) max(var(--space-4), env(safe-area-inset-bottom)) max(var(--space-3), env(safe-area-inset-left));
@@ -566,8 +571,9 @@ summary:focus {
 
 .erase-ask p {
   margin: 0;
-  max-width: 22rem;
-  font-size: 1.25rem;
+  width: min(22rem, 100%);
+  text-align: center;
+  font-size: 1.35rem;
   font-weight: 700;
   line-height: 1.25;
   overflow-wrap: anywhere;
@@ -577,7 +583,7 @@ summary:focus {
   margin: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  max-width: 22rem;
+  width: min(22rem, 100%);
 }
 
 #net-banner {
