@@ -398,10 +398,6 @@ summary:focus {
   color: var(--muted);
   margin: 0 0 var(--space-1);
   font-size: 0.95rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .status:empty {
@@ -427,10 +423,6 @@ summary:focus {
 
 #screen-body {
   margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .packet {
@@ -518,16 +510,8 @@ summary:focus {
   line-height: 1.2;
 }
 
-#packet-list details {
+#packet-list div {
   min-width: 0;
-}
-
-#packet-list summary {
-  font-weight: 700;
-  font-size: 0.95rem;
-  line-height: 1.2;
-  min-height: 2.4rem;
-  cursor: pointer;
 }
 
 #packet-list p {

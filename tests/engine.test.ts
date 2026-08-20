@@ -30,7 +30,10 @@ describe("page hooks", () => {
     expect(html).toContain('id="step-back"');
     expect(html).toContain('id="step-next"');
     expect(html).toContain('id="skip-screen"');
-    expect(html).toContain('id="open-screen"');
+    expect(html).toContain('id="fns-fallback"');
+    expect(html).toContain('href="tel:211"');
+    expect(html).toContain("30 days");
+    expect(html).not.toContain('id="open-screen"');
     expect(html).not.toContain('id="scroll-down"');
     expect(html).toContain("Your ZIP");
     expect(html).toContain("legal-scroll");
@@ -41,6 +44,9 @@ describe("page hooks", () => {
     expect(html).toContain("packet-help");
     expect(html).toContain("2-1-1");
     expect(html).toContain("Open official SNAP page");
+    expect(html).not.toMatch(/looks less likely/i);
+    expect(mainSrc).not.toMatch(/path-recert[\s\S]{0,400}showStep\("interview"/);
+    expect(mainSrc).not.toMatch(/createElement\("details"\)/);
     expect(html).toContain("Content-Security-Policy");
     expect(html).toContain("form-action 'none'");
     expect(html).not.toContain("onsubmit=");
@@ -129,7 +135,10 @@ describe("screenOlderAdult", () => {
       expect(["likely_worth_applying", "maybe", "probably_not"]).toContain(out.result);
       expect(out.body.toLowerCase()).not.toMatch(/\beligible\b|\bineligible\b/);
       expect(out.headline.toLowerCase()).not.toMatch(/\beligible\b|\bineligible\b/);
+      expect(out.headline.toLowerCase()).not.toMatch(/looks less likely/);
     }
+    expect(samples[2]?.result).toBe("probably_not");
+    expect(samples[2]?.headline).toBe("Apply anyway. Only the office decides.");
   });
 
   it("flags low income as likely worth applying", () => {

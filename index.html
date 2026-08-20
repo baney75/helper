@@ -83,10 +83,11 @@
         </div>
         <p class="status" id="zip-status" aria-live="polite"></p>
         <div class="links">
-          <a id="snap-link" class="button" href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer">Open official SNAP page</a>
+          <a id="snap-link" class="button" hidden href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer" aria-disabled="true" tabindex="-1">Open official SNAP page</a>
+          <a id="fns-fallback" class="linkish" href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer">FNS SNAP directory</a>
           <a id="liheap-link" class="linkish" href="https://liheapch.acf.hhs.gov/search-tool" target="_blank" rel="noopener noreferrer">Official energy help search</a>
         </div>
-        <p class="call">Need a person? Call 2-1-1. Food help is open all year.</p>
+        <p class="call">Need a person? Call <a href="tel:211">2-1-1</a>. Food help is open all year.</p>
         <p id="now-energy" class="now">Energy help is seasonal. Money can run out.</p>
         <p id="liheap-note" hidden>
           LIHEAP is a block grant. States set rules and funds can run out. A
@@ -94,7 +95,6 @@
         </p>
         <p class="more">
           <button type="button" id="path-recert" class="linkish">I already get SNAP</button>
-          <button type="button" id="open-screen" class="linkish">Optional screen</button>
         </p>
       </section>
 
@@ -140,7 +140,7 @@
       <section id="step-packet" class="packet step is-off" data-step="packet">
         <p class="packet-kicker">Unofficial draft. Not a government form.</p>
         <h2 tabindex="-1">Papers to bring</h2>
-        <p id="packet-help" class="hint">Bring what you have. Still go if a paper is missing. The office must give you at least 10 days. If you miss the interview, call the number on the notice.</p>
+        <p id="packet-help" class="hint">Bring what you have. Still go if a paper is missing. The office must give you at least 10 days. It usually has 30 days from your application to decide. If you miss the interview, call the number on the notice and ask to reschedule.</p>
         <div class="print-only">
         <p>This packet is a helper draft. It is not an official form. Your state may ask for different papers.</p>
         <p>Bring what you have. If you are missing a paper, still go to the interview or complete the phone interview. Ask the worker how they can help you get proof. The office must give you at least 10 days to turn in papers they ask for.</p>
@@ -162,7 +162,7 @@
 
       <section id="step-interview" class="step no-print is-off" data-step="interview">
         <h2 tabindex="-1">Keep the date</h2>
-        <p class="hint">Save the date from the notice the office sends. Missing that date is how SNAP is lost. It stays on this device.</p>
+        <p class="hint">No date yet? Watch the mail. The office usually has 30 days. Call the number on the notice. Missing that date is how SNAP is lost. A saved date stays on this device.</p>
         <div class="field">
           <label for="reminder-kind">What date is this?</label>
           <select id="reminder-kind">
@@ -263,7 +263,7 @@
       <button type="button" id="clear-device" class="linkish">Erase</button>
       <div class="actions">
         <button type="button" id="step-back" class="secondary">Back</button>
-        <button type="button" id="step-next" aria-label="Continue to papers">Papers</button>
+        <button type="button" id="step-next" class="secondary" aria-label="Continue to papers">Papers</button>
       </div>
     </nav>
     <script type="module" src="/src/main.ts"></script>

@@ -49,17 +49,34 @@ function bindOfficial(anchor: HTMLAnchorElement, href: string, label: string): v
   anchor.textContent = label;
 }
 
+function setSnapReady(ready: boolean): void {
+  const snap = $("snap-link") as HTMLAnchorElement;
+  const fallback = $("fns-fallback");
+  snap.hidden = !ready;
+  if (ready) {
+    snap.removeAttribute("aria-disabled");
+    snap.removeAttribute("tabindex");
+  } else {
+    snap.setAttribute("aria-disabled", "true");
+    snap.tabIndex = -1;
+  }
+  fallback.hidden = ready;
+}
+
 function setOfficialLinks(code: string): void {
   const row = programForState(code);
   const snap = $("snap-link") as HTMLAnchorElement;
   const liheap = $("liheap-link") as HTMLAnchorElement;
   const packetSnap = $("packet-snap-link") as HTMLAnchorElement;
   const packetLiheap = $("packet-liheap-link") as HTMLAnchorElement;
+  const note = $("liheap-note");
   if (!row) {
     bindOfficial(snap, FNS_DIRECTORY, "Open official SNAP page");
     bindOfficial(liheap, ENERGYHELP, energyButtonFallback(monthNow));
     bindOfficial(packetSnap, FNS_DIRECTORY, "FNS SNAP state directory");
     bindOfficial(packetLiheap, ENERGYHELP, "Energyhelp search");
+    setSnapReady(false);
+    note.hidden = true;
     return;
   }
   bindOfficial(
@@ -70,7 +87,9 @@ function setOfficialLinks(code: string): void {
   bindOfficial(liheap, row.liheapUrl, `Energy help · ${row.name}`);
   bindOfficial(packetSnap, row.snapApplyUrl, `${row.name} SNAP page`);
   bindOfficial(packetLiheap, row.liheapUrl, `${row.name} energy help page`);
-  $("liheap-note").textContent = `${row.energyHelpNote} National referral: ${NEAR_PHONE}. Or search by state at Energyhelp.`;
+  note.textContent = `${row.energyHelpNote} National referral: ${NEAR_PHONE}. Or search by state at Energyhelp.`;
+  note.hidden = false;
+  setSnapReady(true);
 }
 
 function currentState(): string {
@@ -159,13 +178,13 @@ function renderPacket(age: number | null, checked: string[]): void {
     box.dataset.item = item.id;
     box.checked = checked.includes(item.id);
     box.addEventListener("change", schedulePersist);
-    const wrap = document.createElement("details");
-    const title = document.createElement("summary");
+    const text = document.createElement("div");
+    const title = document.createElement("strong");
     title.textContent = item.title;
     const detail = document.createElement("p");
     detail.textContent = item.detail;
-    wrap.append(title, detail);
-    label.append(box, wrap);
+    text.append(title, detail);
+    label.append(box, text);
     li.append(label);
     list.append(li);
   }
@@ -208,6 +227,7 @@ function showStep(step: Step, mode: "push" | "replace" | "hash"): void {
   back.disabled = previous === null;
   next.textContent = continueLabel(step);
   next.setAttribute("aria-label", continueAria(step));
+  next.classList.toggle("secondary", step === "pages");
   syncContinue();
   const heading = document.querySelector<HTMLElement>(`section.step[data-step="${step}"] h2`);
   if (step === "pages") input("zip").focus({ preventScroll: true });
@@ -239,7 +259,9 @@ function onZip(): void {
         : `That ZIP maps to ${result.state}. Tap the official page for the state you picked.`;
     } else {
       status.textContent = row
-        ? `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} is ${row.name}. Tap Open SNAP. Then use Papers for what to bring.`
+        ? row.snapOnline
+          ? `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} is ${row.name}. Tap Open SNAP.`
+          : `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} is ${row.name}. Tap How to apply. Call 2-1-1 if you need a local office.`
         : `That ZIP maps to ${result.state}.`;
       setOfficialLinks(currentState() || result.state);
     }
@@ -276,7 +298,8 @@ function onScreen(): void {
 function onReminderSave(): void {
   const date = input("interview-date").value;
   if (!date) {
-    $("reminder-status").textContent = "Pick a date first.";
+    $("reminder-status").textContent =
+      "No date yet. Watch the mail. The office usually has 30 days. Call the number on the notice.";
     return;
   }
   setPacketInterviewLine();
@@ -290,7 +313,8 @@ function onReminderDownload(): void {
   const date = input("interview-date").value;
   const note = input("interview-note").value;
   if (!date) {
-    $("reminder-status").textContent = "Pick a date first.";
+    $("reminder-status").textContent =
+      "No date yet. Watch the mail. The office usually has 30 days. Call the number on the notice.";
     return;
   }
   const kind = reminderKind();
@@ -407,6 +431,7 @@ function restore(): void {
 fillStateSelect();
 ($("energyhelp") as HTMLAnchorElement).href = ENERGYHELP;
 ($("fns-directory") as HTMLAnchorElement).href = FNS_DIRECTORY;
+($("fns-fallback") as HTMLAnchorElement).href = FNS_DIRECTORY;
 $("zip").addEventListener("change", onZip);
 $("zip").addEventListener("blur", onZip);
 $("zip").addEventListener("input", () => {
@@ -426,9 +451,6 @@ $("screen-form").addEventListener("submit", (event) => {
 $("save-reminder").addEventListener("click", onReminderSave);
 $("download-ics").addEventListener("click", onReminderDownload);
 $("print-packet").addEventListener("click", () => {
-  for (const block of Array.from(document.querySelectorAll<HTMLDetailsElement>("#packet-list details"))) {
-    block.open = true;
-  }
   window.print();
 });
 $("interview-date").addEventListener("input", () => {
@@ -449,14 +471,6 @@ for (const id of ["age", "household", "income", "resources", "shelter"] as const
 }
 $("step-back").addEventListener("click", onBack);
 $("step-next").addEventListener("click", onNext);
-$("open-screen").addEventListener("click", () => {
-  if (!currentState()) {
-    $("zip-status").textContent = "Pick a state or type a ZIP first.";
-    return;
-  }
-  showStep("screen", "replace");
-  persist(false);
-});
 $("skip-screen").addEventListener("click", () => {
   if (!currentState()) {
     showStep("pages", "replace");
@@ -468,13 +482,17 @@ $("skip-screen").addEventListener("click", () => {
 });
 $("path-recert").addEventListener("click", () => {
   if (!currentState()) {
-    $("zip-status").textContent = "Pick a state or type a ZIP first.";
+    $("zip-status").textContent = "Pick a state or type a ZIP first. Then open the official SNAP page.";
     return;
   }
   select("reminder-kind").value = "recert";
   setPacketInterviewLine();
-  showStep("interview", "push");
   persist(false);
+  const row = programForState(currentState());
+  $("zip-status").textContent = row
+    ? `Already get SNAP in ${row.name}? Open that official page to renew. Save a date after the notice comes.`
+    : "Open the official SNAP page to renew. Save a date after the notice comes.";
+  showStep("pages", "replace");
 });
 $("clear-device").addEventListener("click", openEraseAsk);
 $("erase-keep").addEventListener("click", closeEraseAsk);

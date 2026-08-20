@@ -31,7 +31,7 @@ const COPY: Record<ScreenResult, { headline: string; body: string }> = {
     body: "Deductions, state rules, and categorical eligibility can change the result. This helper cannot see your full case. This is not a decision that you qualify or do not qualify.",
   },
   probably_not: {
-    headline: "A SNAP benefit looks less likely from these numbers.",
+    headline: "Apply anyway. Only the office decides.",
     body: "That is not a denial. State rules, medical costs, housing costs, and categorical eligibility can still change the result. Applying is the only official determination.",
   },
 };
