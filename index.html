@@ -49,6 +49,7 @@
       <p class="trust no-print">Not a government website. It does not file an application.</p>
       <details class="legal no-print">
         <summary>Privacy and disclaimer</summary>
+        <button type="button" id="legal-close" class="secondary">Close</button>
         <div class="legal-scroll">
         <p id="disclaimer-text">This site is an unofficial helper. It is not a government website. It is not affiliated with USDA, HHS, FNS, ACF, or any state agency. This site does not decide if you qualify. It does not file an application for you. Only your state agency can accept an application and decide your case. This site is not legal advice and not a substitute for talking with your local SNAP or LIHEAP office. Program rules differ by state and can change. If this site conflicts with an official notice, application, or worker, follow the official source.</p>
         <p id="privacy-text">Your answers stay in this browser on this device. This helper does not create an account. It does not send your answers to a server. If you download a reminder file or print a packet, that file is yours to keep or delete. When the internet is back, this page can update itself. Your answers still do not leave the device.</p>
@@ -140,7 +141,7 @@
       <section id="step-packet" class="packet step is-off" data-step="packet">
         <p class="packet-kicker">Unofficial draft. Not a government form.</p>
         <h2 tabindex="-1">Papers to bring</h2>
-        <p id="packet-help" class="hint">Bring what you have. Still go if a paper is missing. The office must give you at least 10 days. It usually has 30 days from your application to decide. If you miss the interview, call the number on the notice and ask to reschedule.</p>
+        <p id="packet-help" class="hint">Still go if a paper is missing. 10 days for papers, 30 days to decide.</p>
         <div class="print-only">
         <p>This packet is a helper draft. It is not an official form. Your state may ask for different papers.</p>
         <p>Bring what you have. If you are missing a paper, still go to the interview or complete the phone interview. Ask the worker how they can help you get proof. The office must give you at least 10 days to turn in papers they ask for.</p>
@@ -149,12 +150,11 @@
         <p id="packet-season"></p>
         </div>
         <p id="packet-official">
-          <a id="packet-snap-link" href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer">FNS SNAP state directory</a>
-          ·
-          <a id="packet-liheap-link" href="https://liheapch.acf.hhs.gov/search-tool" target="_blank" rel="noopener noreferrer">Energyhelp search</a>
+          <a id="packet-snap-link" class="button" href="https://www.fns.usda.gov/snap/state-directory" target="_blank" rel="noopener noreferrer">Open official SNAP page</a>
         </p>
-        <p id="packet-interview-line"></p>
+        <p id="packet-interview-line" hidden></p>
         <ul id="packet-list"></ul>
+        <a id="packet-liheap-link" class="linkish" href="https://liheapch.acf.hhs.gov/search-tool" target="_blank" rel="noopener noreferrer">Energyhelp search</a>
         <div class="actions no-print">
           <button type="button" id="print-packet">Print this packet</button>
         </div>
@@ -162,7 +162,7 @@
 
       <section id="step-interview" class="step no-print is-off" data-step="interview">
         <h2 tabindex="-1">Keep the date</h2>
-        <p class="hint">No date yet? Watch the mail. The office usually has 30 days. Call the number on the notice. Missing that date is how SNAP is lost. A saved date stays on this device.</p>
+        <p class="hint">Watch the mail. The office usually has 30 days. Call the number on the notice.</p>
         <div class="field">
           <label for="reminder-kind">What date is this?</label>
           <select id="reminder-kind">

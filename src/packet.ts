@@ -10,19 +10,18 @@ export function packetItems(opts: { age60Plus: boolean }): PacketItem[] {
       id: "id",
       title: "Photo or other ID",
       detail:
-        "Driver’s license, work or school ID, health card, voter card, wage stub, or birth certificate. The office may not demand one specific ID.",
+        "License, work ID, health card, or birth certificate. They may not demand one specific ID.",
     },
     {
       id: "ssn",
-      title: "Social Security numbers for people who are applying",
+      title: "Social Security numbers for applicants",
       detail:
-        "The card helps. The number can be enough. People who are not applying do not have to give an SSN or immigration papers.",
+        "The number can be enough. People not applying do not have to give an SSN.",
     },
     {
       id: "income",
       title: "Proof of income",
-      detail:
-        "Latest pay stubs or an employer statement. Award letters for Social Security, VA, unemployment, or a pension.",
+      detail: "Pay stubs, or award letters for Social Security, VA, or a pension.",
     },
     {
       id: "rent",
@@ -32,29 +31,25 @@ export function packetItems(opts: { age60Plus: boolean }): PacketItem[] {
     {
       id: "utils",
       title: "Utility bills",
-      detail:
-        "Electric, gas, oil, water, sewer, garbage, or phone. Some states use a standard allowance instead of actual bills.",
+      detail: "Electric, gas, water, or phone. Some states use a standard allowance.",
     },
     {
       id: "home",
       title: "Where you live, if they ask",
-      detail:
-        "Often covered by ID, a lease, or a bill. No fixed address should not stop the application.",
+      detail: "Often on your ID, lease, or a bill. No address should not stop you.",
     },
   ];
   if (opts.age60Plus) {
     items.push({
       id: "medical",
       title: "Medical bills if you are 60 or older or disabled",
-      detail:
-        "Costs over $35 a month that insurance does not pay, plus any reimbursement papers.",
+      detail: "Costs over $35 a month that insurance does not pay.",
     });
   }
   items.push({
     id: "immigration",
     title: "Immigration papers, only if a non-citizen is applying",
-    detail:
-      "U.S. citizens do not need these. A household can continue without a member who does not want USCIS contacted.",
+    detail: "U.S. citizens do not need these.",
   });
   return items;
 }

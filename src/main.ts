@@ -1,5 +1,6 @@
 import { ENERGYHELP, FNS_DIRECTORY, NEAR_PHONE, PROGRAMS, programForState } from "./data/programs";
 import { packetItems } from "./packet";
+import { fillWithPhoneLinks } from "./phone";
 import { icsFilename, icsForReminder, isReminderKind, type ReminderKind } from "./reminder";
 import { screenOlderAdult } from "./screen";
 import { lookupZip } from "./zip";
@@ -73,7 +74,7 @@ function setOfficialLinks(code: string): void {
   if (!row) {
     bindOfficial(snap, FNS_DIRECTORY, "Open official SNAP page");
     bindOfficial(liheap, ENERGYHELP, energyButtonFallback(monthNow));
-    bindOfficial(packetSnap, FNS_DIRECTORY, "FNS SNAP state directory");
+    bindOfficial(packetSnap, FNS_DIRECTORY, "Open official SNAP page");
     bindOfficial(packetLiheap, ENERGYHELP, "Energyhelp search");
     setSnapReady(false);
     note.hidden = true;
@@ -85,9 +86,12 @@ function setOfficialLinks(code: string): void {
     row.snapOnline ? `Open SNAP for ${row.name}` : `How to apply in ${row.name}`,
   );
   bindOfficial(liheap, row.liheapUrl, `Energy help · ${row.name}`);
-  bindOfficial(packetSnap, row.snapApplyUrl, `${row.name} SNAP page`);
+  bindOfficial(packetSnap, row.snapApplyUrl, row.snapOnline ? `Open SNAP for ${row.name}` : `How to apply in ${row.name}`);
   bindOfficial(packetLiheap, row.liheapUrl, `${row.name} energy help page`);
-  note.textContent = `${row.energyHelpNote} National referral: ${NEAR_PHONE}. Or search by state at Energyhelp.`;
+  fillWithPhoneLinks(
+    note,
+    `${row.energyHelpNote} National referral: ${NEAR_PHONE}. Or search by state at Energyhelp.`,
+  );
   note.hidden = false;
   setSnapReady(true);
 }
@@ -203,9 +207,11 @@ function setPacketInterviewLine(): void {
   const line = $("packet-interview-line");
   const label = dateKindLabel();
   if (!date) {
-    line.textContent = `${label}: write it here once the office sets it.`;
+    line.hidden = true;
+    line.textContent = "";
     return;
   }
+  line.hidden = false;
   line.textContent = note ? `${label}: ${date}. ${note}` : `${label}: ${date}.`;
 }
 
@@ -227,7 +233,7 @@ function showStep(step: Step, mode: "push" | "replace" | "hash"): void {
   back.disabled = previous === null;
   next.textContent = continueLabel(step);
   next.setAttribute("aria-label", continueAria(step));
-  next.classList.toggle("secondary", step === "pages");
+  next.classList.add("secondary");
   syncContinue();
   const heading = document.querySelector<HTMLElement>(`section.step[data-step="${step}"] h2`);
   if (step === "pages") input("zip").focus({ preventScroll: true });
@@ -299,7 +305,7 @@ function onReminderSave(): void {
   const date = input("interview-date").value;
   if (!date) {
     $("reminder-status").textContent =
-      "No date yet. Watch the mail. The office usually has 30 days. Call the number on the notice.";
+      "No date yet. Watch the mail. Call the number on the notice.";
     return;
   }
   setPacketInterviewLine();
@@ -314,7 +320,7 @@ function onReminderDownload(): void {
   const note = input("interview-note").value;
   if (!date) {
     $("reminder-status").textContent =
-      "No date yet. Watch the mail. The office usually has 30 days. Call the number on the notice.";
+      "No date yet. Watch the mail. Call the number on the notice.";
     return;
   }
   const kind = reminderKind();
@@ -494,6 +500,10 @@ $("path-recert").addEventListener("click", () => {
     : "Open the official SNAP page to renew. Save a date after the notice comes.";
   showStep("pages", "replace");
 });
+$("legal-close").addEventListener("click", () => {
+  const legal = document.querySelector("details.legal");
+  if (legal instanceof HTMLDetailsElement) legal.open = false;
+});
 $("clear-device").addEventListener("click", openEraseAsk);
 $("erase-keep").addEventListener("click", closeEraseAsk);
 $("erase-yes").addEventListener("click", () => {
@@ -531,7 +541,7 @@ if (import.meta.env.PROD) {
         if (saveFailed) return;
         const banner = $("update-banner");
         banner.hidden = false;
-        banner.textContent = "This helper will keep working if the internet drops. Official apply pages still need the internet.";
+        banner.textContent = "Works offline. Official apply pages still need the internet.";
         window.setTimeout(() => {
           if (!saveFailed) banner.hidden = true;
         }, 5000);

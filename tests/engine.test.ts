@@ -9,6 +9,7 @@ import { screenOlderAdult } from "../src/screen";
 import { packetItems } from "../src/packet";
 import { continueLabel, hashStep, nextStep, parseStep, persistableStep, prevStep, stepLabel } from "../src/steps";
 import { icsFilename, icsForReminder } from "../src/reminder";
+import { telHref } from "../src/phone";
 import { energySeason, energySeasonCopy, SNAP_YEAR_ROUND } from "../src/season";
 import { parseProgress, saveProgress, loadProgress, clearProgress, PROGRESS_KEY, EMPTY_PROGRESS } from "../src/progress";
 
@@ -56,6 +57,8 @@ describe("page hooks", () => {
     expect(css).not.toMatch(/pre-wrap/);
     expect(html).toContain('id="erase-ask"');
     expect(html).toContain('id="erase-keep"');
+    expect(html).toContain('id="legal-close"');
+    expect(html).toContain('id="packet-snap-link"');
     expect(mainSrc).not.toMatch(/window\.confirm/);
     expect(mainSrc).not.toMatch(/sendBeacon|XMLHttpRequest|gtag|analytics/i);
   });
@@ -321,5 +324,14 @@ describe("season", () => {
     expect(energySeasonCopy(8).toLowerCase()).toMatch(/cooling|crisis/);
     expect(energySeasonCopy(8).toLowerCase()).not.toMatch(/\beligible\b/);
     expect(energySeasonCopy(1).toLowerCase()).toMatch(/heating/);
+  });
+});
+
+describe("tel links", () => {
+  it("turns office numbers into tap-to-call hrefs", () => {
+    expect(telHref("1-866-857-7095")).toBe("tel:+18668577095");
+    expect(telHref("2-1-1")).toBe("tel:211");
+    expect(telHref("800-246-4221")).toBe("tel:+18002464221");
+    expect(telHref("401-462-6419")).toBe("tel:+14014626419");
   });
 });
