@@ -16,7 +16,8 @@ export default defineConfig({
       },
     },
     VitePWA({
-      registerType: "autoUpdate",
+      // Keep the current asset set together until the person chooses Reload.
+      registerType: "prompt",
       injectRegister: false,
       includeAssets: ["og.jpg", "icon.svg", "icon-192.png", "icon-512.png", ".nojekyll"],
       manifest: {
@@ -53,7 +54,7 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,svg,png,jpg,ico,txt,webmanifest}"],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
-        skipWaiting: true,
+        skipWaiting: false,
         navigateFallback: "/helper/index.html",
         navigateFallbackDenylist: [/^\/helper\/outreach/],
       },

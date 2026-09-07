@@ -1,5 +1,11 @@
 /** SNAP FY2026 monthly limits (1 Oct 2025–30 Sep 2026). Source: FNS COLA. */
 
+/**
+ * These figures are deliberately bounded. A new fiscal-year table needs a
+ * source review before the optional screen can use it again.
+ */
+export const SNAP_FY2026_END = "2026-09-30";
+
 export type Region = "contiguous" | "alaska" | "hawaii";
 
 export type MonthlyLimits = {
@@ -55,6 +61,22 @@ const TABLES: Record<Region, Record<number, MonthlyLimits>> = {
 };
 
 export const ELDERLY_RESOURCE_CAP = 4500;
+
+export function hasCurrentSnapScreenRules(now = new Date()): boolean {
+  const localDate = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
+  return localDate <= SNAP_FY2026_END;
+}
+
+export function snapScreenRulesNote(now = new Date()): string {
+  if (!hasCurrentSnapScreenRules(now)) {
+    return "The optional income screen is paused because its FY2026 source ended September 30, 2026. Use the official SNAP page for current rules.";
+  }
+  return "The optional income screen uses FY2026 figures through September 30, 2026. Rules can change; the official SNAP page is the current source.";
+}
 
 export function regionForState(state: string): Region {
   if (state === "AK") return "alaska";

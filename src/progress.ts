@@ -1,5 +1,6 @@
 import { isStep, type Step } from "./steps";
 import { isReminderKind, type ReminderKind } from "./reminder";
+import { isStateSelectionOrigin, type StateSelectionOrigin } from "./state-selection";
 
 export const PROGRESS_KEY = "helper-progress-v1";
 const LEGACY_REMINDER_KEY = "helper-interview-reminder";
@@ -9,6 +10,7 @@ export type Progress = {
   step: Step;
   zip: string;
   state: string;
+  stateOrigin: StateSelectionOrigin;
   age: string;
   household: string;
   income: string;
@@ -27,6 +29,7 @@ export const EMPTY_PROGRESS: Progress = {
   step: "pages",
   zip: "",
   state: "",
+  stateOrigin: "none",
   age: "",
   household: "",
   income: "",
@@ -68,11 +71,13 @@ export function parseProgress(raw: string): Progress | null {
       ? row.checked.filter((id): id is string => typeof id === "string")
       : [];
     const kindRaw = asString(row.reminderKind);
+    const stateOriginRaw = asString(row.stateOrigin);
     return {
       v: 1,
       step: isStep(step) ? step : "pages",
       zip: asString(row.zip),
       state: asString(row.state),
+      stateOrigin: isStateSelectionOrigin(stateOriginRaw) ? stateOriginRaw : "none",
       age: asString(row.age),
       household: asString(row.household),
       income: asString(row.income),
@@ -120,11 +125,13 @@ export function loadProgress(store = storage()): Progress | null {
   }
 }
 
-export function clearProgress(store = storage()): void {
+export function clearProgress(store = storage()): boolean {
+  if (!store) return false;
   try {
-    store?.removeItem(PROGRESS_KEY);
-    store?.removeItem(LEGACY_REMINDER_KEY);
+    store.removeItem(PROGRESS_KEY);
+    store.removeItem(LEGACY_REMINDER_KEY);
+    return true;
   } catch {
-    return;
+    return false;
   }
 }

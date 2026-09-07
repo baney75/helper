@@ -1,8 +1,10 @@
 import { ENERGYHELP, FNS_DIRECTORY, NEAR_PHONE, PROGRAMS, programForState } from "./data/programs";
+import { snapScreenRulesNote } from "./data/fpl";
 import { packetItems } from "./packet";
 import { fillWithPhoneLinks } from "./phone";
 import { icsFilename, icsForReminder, isReminderKind, type ReminderKind } from "./reminder";
 import { screenOlderAdult } from "./screen";
+import { stateForZip, type StateSelectionOrigin } from "./state-selection";
 import { lookupZip } from "./zip";
 import { watchNetwork } from "./online";
 import {
@@ -43,11 +45,29 @@ function fillStateSelect(): void {
   }
 }
 
-function bindOfficial(anchor: HTMLAnchorElement, href: string, label: string): void {
+function bindOfficial(
+  anchor: HTMLAnchorElement,
+  href: string,
+  label: string,
+  ariaLabel = label,
+): void {
   anchor.href = href;
   anchor.target = "_blank";
   anchor.rel = "noopener noreferrer";
   anchor.textContent = label;
+  anchor.setAttribute("aria-label", ariaLabel);
+}
+
+function snapLinkLabel(
+  row: NonNullable<ReturnType<typeof programForState>>,
+  includeState = false,
+): string {
+  const label = row.snapLinkKind === "application"
+    ? "Open official SNAP application"
+    : row.snapOnline
+      ? "Open official SNAP start page"
+      : "Read official SNAP information";
+  return includeState ? `${label} · ${row.name}` : label;
 }
 
 function setSnapReady(ready: boolean): void {
@@ -80,13 +100,9 @@ function setOfficialLinks(code: string): void {
     note.hidden = true;
     return;
   }
-  bindOfficial(
-    snap,
-    row.snapApplyUrl,
-    row.snapOnline ? `Open SNAP for ${row.name}` : `How to apply in ${row.name}`,
-  );
+  bindOfficial(snap, row.snapApplyUrl, snapLinkLabel(row), `${snapLinkLabel(row)} for ${row.name}`);
   bindOfficial(liheap, row.liheapUrl, `Energy help · ${row.name}`);
-  bindOfficial(packetSnap, row.snapApplyUrl, row.snapOnline ? `Open SNAP for ${row.name}` : `How to apply in ${row.name}`);
+  bindOfficial(packetSnap, row.snapApplyUrl, snapLinkLabel(row, true));
   bindOfficial(packetLiheap, row.liheapUrl, `${row.name} energy help page`);
   fillWithPhoneLinks(
     note,
@@ -126,6 +142,7 @@ function collectProgress(step: Step): Progress {
     step,
     zip: input("zip").value,
     state: currentState(),
+    stateOrigin: stateSelectionOrigin,
     age: input("age").value,
     household: input("household").value,
     income: input("income").value,
@@ -144,6 +161,7 @@ let current: Step = "pages";
 let persistTimer = 0;
 let saveBannerTimer = 0;
 let saveFailed = false;
+let stateSelectionOrigin: StateSelectionOrigin = "none";
 
 function flashSaved(ok: boolean): void {
   const banner = $("save-banner");
@@ -154,6 +172,20 @@ function flashSaved(ok: boolean): void {
   window.clearTimeout(saveBannerTimer);
   saveFailed = !ok;
   if (!ok) return;
+  saveBannerTimer = window.setTimeout(() => {
+    banner.hidden = true;
+  }, 2500);
+}
+
+function flashReset(cleared: boolean): void {
+  const banner = $("save-banner");
+  banner.hidden = false;
+  banner.textContent = cleared
+    ? "Answers erased on this device."
+    : "This browser did not confirm erasing saved answers. Close this tab before sharing the device.";
+  window.clearTimeout(saveBannerTimer);
+  saveFailed = !cleared;
+  if (!cleared) return;
   saveBannerTimer = window.setTimeout(() => {
     banner.hidden = true;
   }, 2500);
@@ -249,32 +281,45 @@ function showStep(step: Step, mode: "push" | "replace" | "hash"): void {
 
 function onZip(): void {
   const zip = input("zip").value;
+  const digits = zip.replace(/\D/g, "");
   const result = lookupZip(zip);
   const status = $("zip-status");
+  const selection = stateForZip(
+    { code: currentState(), origin: stateSelectionOrigin },
+    result,
+  );
+  stateSelectionOrigin = selection.origin;
+  if (currentState() !== selection.code) select("state").value = selection.code;
+  setOfficialLinks(selection.code);
+
+  if (!digits) {
+    status.textContent = "";
+    syncContinue();
+    return;
+  }
   if (result.kind === "state") {
-    const picked = currentState();
-    if (!picked) {
-      select("state").value = result.state;
-      setOfficialLinks(result.state);
-    }
     const row = programForState(result.state);
     const shown = programForState(currentState());
-    if (picked && picked !== result.state && shown) {
+    if (stateSelectionOrigin === "manual" && currentState() !== result.state && shown) {
       status.textContent = row
-        ? `ZIP maps to ${row.name}. You picked ${shown.name}. Tap the official page for ${shown.name}.`
-        : `That ZIP maps to ${result.state}. Tap the official page for the state you picked.`;
+        ? `ZIP maps to ${row.name}. You picked ${shown.name}. The official page below is for ${shown.name}.`
+        : `That ZIP maps to ${result.state}. The official page below is for the state you picked.`;
     } else {
       status.textContent = row
-        ? row.snapOnline
-          ? `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} is ${row.name}. Tap Open SNAP.`
-          : `ZIP ${zip.replace(/\D/g, "").slice(0, 5)} is ${row.name}. Tap How to apply. Call 2-1-1 if you need a local office.`
+        ? row.snapLinkKind === "application"
+          ? `ZIP ${digits.slice(0, 5)} is ${row.name}. The navy button opens the official SNAP application.`
+          : row.snapOnline
+            ? `ZIP ${digits.slice(0, 5)} is ${row.name}. The navy button opens the official SNAP start page.`
+            : `ZIP ${digits.slice(0, 5)} is ${row.name}. The navy button has official SNAP information. Call 2-1-1 if you need a local office.`
         : `That ZIP maps to ${result.state}.`;
-      setOfficialLinks(currentState() || result.state);
     }
     syncContinue();
     return;
   }
-  status.textContent = result.reason;
+  const shown = programForState(currentState());
+  status.textContent = shown
+    ? `${result.reason} The official page below is for ${shown.name}.`
+    : result.reason;
   syncContinue();
 }
 
@@ -335,7 +380,8 @@ function onReminderDownload(): void {
 
 function applyProgress(saved: Progress): void {
   input("zip").value = saved.zip;
-  select("state").value = saved.state;
+  select("state").value = "";
+  stateSelectionOrigin = "none";
   input("age").value = saved.age;
   input("household").value = saved.household;
   input("income").value = saved.income;
@@ -346,8 +392,13 @@ function applyProgress(saved: Progress): void {
   select("reminder-kind").value = saved.reminderKind;
   if (saved.zip) onZip();
   if (saved.state) {
-    select("state").value = saved.state;
-    setOfficialLinks(saved.state);
+    const matchesZip = saved.state === currentState();
+    const origin = saved.stateOrigin;
+    if (origin !== "none" || !matchesZip) {
+      select("state").value = saved.state;
+      stateSelectionOrigin = origin === "none" ? "manual" : origin;
+    }
+    onZip();
   }
   if (saved.screenHeadline) {
     $("screen-headline").textContent = saved.screenHeadline;
@@ -359,9 +410,10 @@ function applyProgress(saved: Progress): void {
 }
 
 function resetDevice(): void {
-  clearProgress();
+  const cleared = clearProgress();
   input("zip").value = "";
   select("state").value = "";
+  stateSelectionOrigin = "none";
   input("age").value = "";
   input("household").value = "";
   input("income").value = "";
@@ -374,11 +426,22 @@ function resetDevice(): void {
   $("screen-headline").textContent = "";
   $("screen-body").textContent = "";
   $("screen-result").classList.remove("has-result");
-  $("reminder-status").textContent = "Answers erased on this device.";
+  $("reminder-status").textContent = "";
   setOfficialLinks("");
   renderPacket(null, []);
   setPacketInterviewLine();
   showStep("pages", "replace");
+  flashReset(cleared);
+}
+
+function removeReminder(): void {
+  input("interview-date").value = "";
+  input("interview-note").value = "";
+  setPacketInterviewLine();
+  const ok = persist(true);
+  $("reminder-status").textContent = ok
+    ? "Date and note removed from this device."
+    : "This browser blocked saving. The date is cleared on this screen, but an earlier saved copy may remain.";
 }
 
 function eraseAsk(): HTMLElement {
@@ -398,10 +461,23 @@ function openEraseAsk(): void {
 }
 
 function onEraseKey(event: KeyboardEvent): void {
-  if (event.key !== "Escape") return;
   if (eraseAsk().hidden) return;
-  event.preventDefault();
-  closeEraseAsk();
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeEraseAsk();
+    return;
+  }
+  if (event.key !== "Tab") return;
+
+  const first = $("erase-keep") as HTMLButtonElement;
+  const last = $("erase-yes") as HTMLButtonElement;
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
 }
 
 function onNext(): void {
@@ -441,13 +517,12 @@ fillStateSelect();
 $("zip").addEventListener("change", onZip);
 $("zip").addEventListener("blur", onZip);
 $("zip").addEventListener("input", () => {
-  const digits = input("zip").value.replace(/\D/g, "");
-  if (digits.length >= 5) onZip();
+  onZip();
   schedulePersist();
 });
 $("state").addEventListener("change", () => {
-  setOfficialLinks(currentState());
-  syncContinue();
+  stateSelectionOrigin = currentState() ? "manual" : "none";
+  onZip();
   schedulePersist();
 });
 $("see-result").addEventListener("click", onScreen);
@@ -456,6 +531,7 @@ $("screen-form").addEventListener("submit", (event) => {
 });
 $("save-reminder").addEventListener("click", onReminderSave);
 $("download-ics").addEventListener("click", onReminderDownload);
+$("remove-reminder").addEventListener("click", removeReminder);
 $("print-packet").addEventListener("click", () => {
   window.print();
 });
@@ -524,6 +600,7 @@ watchNetwork((online) => {
 restore();
 $("now-energy").textContent = energySeasonShort(monthNow);
 $("packet-season").textContent = packetSeasonLine(monthNow);
+$("screen-rules-note").textContent = snapScreenRulesNote();
 
 function syncViewport(): void {
   const viewport = window.visualViewport;
@@ -536,12 +613,11 @@ window.addEventListener("resize", syncViewport);
 
 if (import.meta.env.PROD) {
   void import("./pwa").then(({ startPwa }) => {
-    startPwa({
+    const reloadForUpdate = startPwa({
       onOfflineReady: () => {
         if (saveFailed) return;
-        const banner = $("update-banner");
+        const banner = $("ready-banner");
         banner.hidden = false;
-        banner.textContent = "Works offline. Official apply pages still need the internet.";
         window.setTimeout(() => {
           if (!saveFailed) banner.hidden = true;
         }, 5000);
@@ -550,6 +626,10 @@ if (import.meta.env.PROD) {
         const banner = $("update-banner");
         banner.hidden = false;
       },
+    });
+    $("reload-update").addEventListener("click", () => {
+      if (!reloadForUpdate) return;
+      reloadForUpdate();
     });
   });
 }

@@ -1,5 +1,6 @@
 import {
   ELDERLY_RESOURCE_CAP,
+  hasCurrentSnapScreenRules,
   regionForState,
   snapMonthlyLimits,
 } from "./data/fpl";
@@ -36,11 +37,19 @@ const COPY: Record<ScreenResult, { headline: string; body: string }> = {
   },
 };
 
-export function screenOlderAdult(input: ScreenInput): ScreenOutput {
+export function screenOlderAdult(input: ScreenInput, now = new Date()): ScreenOutput {
   const copy = (result: ScreenResult): ScreenOutput => ({
     result,
     ...COPY[result],
   });
+
+  if (!hasCurrentSnapScreenRules(now)) {
+    return {
+      result: "maybe",
+      headline: "Use the official SNAP page for current rules.",
+      body: "This optional income screen is paused because its FY2026 source ended September 30, 2026. Only the state SNAP office can decide your case.",
+    };
+  }
 
   if (input.age === null || Number.isNaN(input.age)) {
     return copy("maybe");

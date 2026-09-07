@@ -3,9 +3,10 @@ import { registerSW } from "virtual:pwa-register";
 export function startPwa(opts: {
   onOfflineReady: () => void;
   onUpdated: () => void;
-}): void {
-  if (!("serviceWorker" in navigator)) return;
-  registerSW({
+}): (() => void) | null {
+  if (!("serviceWorker" in navigator)) return null;
+  let updateNow: ((reloadPage?: boolean) => Promise<void>) | null = null;
+  updateNow = registerSW({
     immediate: true,
     onOfflineReady: opts.onOfflineReady,
     onNeedRefresh: opts.onUpdated,
@@ -20,4 +21,7 @@ export function startPwa(opts: {
       window.setInterval(check, 30 * 60 * 1000);
     },
   });
+  return () => {
+    void updateNow?.(true);
+  };
 }

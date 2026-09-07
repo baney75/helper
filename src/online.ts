@@ -3,7 +3,11 @@ export function isOnline(): boolean {
 }
 
 export function watchNetwork(onChange: (online: boolean) => void): () => void {
-  const fire = (): void => onChange(isOnline());
+  const fire = (event?: Event): void => {
+    if (event?.type === "online") onChange(true);
+    else if (event?.type === "offline") onChange(false);
+    else onChange(isOnline());
+  };
   window.addEventListener("online", fire);
   window.addEventListener("offline", fire);
   fire();

@@ -4,7 +4,9 @@ import css from "../src/styles.css?raw";
 import mainSrc from "../src/main.ts?raw";
 import { DISCLAIMER } from "../src/copy";
 import { PROGRAMS } from "../src/data/programs";
+import { hasCurrentSnapScreenRules, snapScreenRulesNote } from "../src/data/fpl";
 import { lookupZip } from "../src/zip";
+import { stateForZip } from "../src/state-selection";
 import { screenOlderAdult } from "../src/screen";
 import { packetItems } from "../src/packet";
 import { continueLabel, hashStep, nextStep, parseStep, persistableStep, prevStep, stepLabel } from "../src/steps";
@@ -59,6 +61,12 @@ describe("page hooks", () => {
     expect(html).toContain('id="erase-keep"');
     expect(html).toContain('id="legal-close"');
     expect(html).toContain('id="packet-snap-link"');
+    expect(html).toContain('id="screen-rules-note"');
+    expect(html).toContain('id="remove-reminder"');
+    expect(html).toContain('id="reload-update"');
+    expect(html).toContain("https://www.benefitscal.com/");
+    expect(html).toContain("https://www.pa.gov/agencies/dhs/resources/liheap");
+    expect(html).not.toContain("https://www.dhs.pa.gov/Services/Assistance/Pages/LIHEAP.aspx");
     expect(mainSrc).not.toMatch(/window\.confirm/);
     expect(mainSrc).not.toMatch(/sendBeacon|XMLHttpRequest|gtag|analytics/i);
   });
@@ -72,7 +80,20 @@ describe("programs freeze", () => {
     for (const row of PROGRAMS) {
       expect(row.snapApplyUrl.startsWith("http")).toBe(true);
       expect(row.liheapUrl.startsWith("http")).toBe(true);
+      expect(html).toContain(row.snapApplyUrl);
+      expect(html).toContain(row.liheapUrl);
     }
+  });
+
+  it("uses the current official PA and California destinations with honest link kinds", () => {
+    const pa = PROGRAMS.find((row) => row.code === "PA");
+    const ca = PROGRAMS.find((row) => row.code === "CA");
+    expect(pa?.snapApplyUrl).toBe("https://www.compass.dhs.pa.gov/");
+    expect(pa?.liheapUrl).toBe("https://www.pa.gov/agencies/dhs/resources/liheap");
+    expect(ca?.snapApplyUrl).toBe("https://www.benefitscal.com/");
+    expect(ca?.liheapUrl).toBe("https://csd.ca.gov/Pages/LIHEAPProgram.aspx");
+    expect(pa?.snapLinkKind).toBe("application");
+    expect(ca?.snapLinkKind).toBe("application");
   });
 });
 
@@ -103,6 +124,37 @@ describe("lookupZip", () => {
     expect(lookupZip("123").kind).toBe("invalid");
     expect(lookupZip("00601").kind).toBe("out_of_scope");
     expect(lookupZip("96799").kind).toBe("out_of_scope");
+  });
+});
+
+describe("ZIP state selection", () => {
+  it("replaces an automatic ZIP match and clears it when the ZIP stops matching", () => {
+    expect(stateForZip({ code: "PA", origin: "zip" }, lookupZip("90210"))).toEqual({
+      code: "CA",
+      origin: "zip",
+    });
+    expect(stateForZip({ code: "CA", origin: "zip" }, lookupZip("902"))).toEqual({
+      code: "",
+      origin: "none",
+    });
+  });
+
+  it("keeps an explicitly selected state even when the ZIP differs", () => {
+    expect(stateForZip({ code: "PA", origin: "manual" }, lookupZip("90210"))).toEqual({
+      code: "PA",
+      origin: "manual",
+    });
+    expect(stateForZip({ code: "PA", origin: "manual" }, lookupZip("902"))).toEqual({
+      code: "PA",
+      origin: "manual",
+    });
+  });
+
+  it("refreshes the ZIP status after restoring or manually changing a state", () => {
+    expect(mainSrc).toMatch(/if \(saved\.state\) \{[\s\S]*?onZip\(\);/);
+    expect(mainSrc).toMatch(
+      /\$\("state"\)\.addEventListener\("change", \(\) => \{[\s\S]*?onZip\(\);/,
+    );
   });
 });
 
@@ -142,6 +194,25 @@ describe("screenOlderAdult", () => {
     }
     expect(samples[2]?.result).toBe("probably_not");
     expect(samples[2]?.headline).toBe("Apply anyway. Only the office decides.");
+  });
+
+  it("pauses numeric screening after the FY2026 source expires", () => {
+    const expired = new Date("2026-10-01T12:00:00");
+    expect(hasCurrentSnapScreenRules(expired)).toBe(false);
+    expect(snapScreenRulesNote(expired)).toMatch(/paused/i);
+    expect(
+      screenOlderAdult(
+        {
+          age: 68,
+          householdSize: 1,
+          state: "PA",
+          grossMonthlyIncome: 900,
+          countableResources: 0,
+          highShelterOrMedical: false,
+        },
+        expired,
+      ).result,
+    ).toBe("maybe");
   });
 
   it("flags low income as likely worth applying", () => {
@@ -265,6 +336,7 @@ describe("progress", () => {
         step: "packet",
         zip: "19103",
         state: "PA",
+        stateOrigin: "manual",
         age: "72",
         household: "1",
         income: "900",
@@ -283,6 +355,7 @@ describe("progress", () => {
     expect(loadProgress(fake)?.zip).toBe("19103");
     expect(loadProgress(fake)?.checked).toEqual(["id", "rent"]);
     expect(loadProgress(fake)?.reminderKind).toBe("recert");
+    expect(loadProgress(fake)?.stateOrigin).toBe("manual");
     expect(
       saveProgress(EMPTY_PROGRESS, {
         getItem: () => null,
@@ -293,8 +366,41 @@ describe("progress", () => {
       }),
     ).toBe(false);
     expect(parseProgress('{"step":"nope","zip":12}')?.step).toBe("pages");
-    clearProgress(fake);
+    expect(clearProgress(fake)).toBe(true);
     expect(store.has(PROGRESS_KEY)).toBe(false);
+
+    expect(
+      clearProgress({
+        getItem: () => null,
+        setItem: () => undefined,
+        removeItem: () => {
+          throw new Error("blocked");
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it("preserves a matching manual state across reload before a ZIP changes", () => {
+    const saved = parseProgress(
+      JSON.stringify({
+        ...EMPTY_PROGRESS,
+        zip: "19103",
+        state: "PA",
+        stateOrigin: "manual",
+      }),
+    );
+    expect(saved?.stateOrigin).toBe("manual");
+    expect(
+      stateForZip(
+        { code: saved?.state ?? "", origin: saved?.stateOrigin ?? "none" },
+        lookupZip("90210"),
+      ),
+    ).toEqual({ code: "PA", origin: "manual" });
+  });
+
+  it("keeps legacy saves readable without inventing a manual choice", () => {
+    const saved = parseProgress('{"zip":"19103","state":"PA"}');
+    expect(saved?.stateOrigin).toBe("none");
   });
 
   it("migrates the old interview reminder key", () => {

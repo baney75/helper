@@ -36,9 +36,13 @@
   <body data-step="pages">
     <a class="skip" href="#main">Skip to main content</a>
     <div class="banners no-print" aria-live="polite">
-      <p id="net-banner" hidden>You are offline. This helper still works for the packet and the interview date. Official apply pages need the internet.</p>
+      <p id="net-banner" hidden>Offline. The packet and saved date still work. Official state pages need the internet.</p>
       <p id="save-banner" hidden>Saved on this device.</p>
-      <p id="update-banner" hidden>Helper updated. Your answers are still on this device.</p>
+      <p id="ready-banner" hidden>Works offline. Official apply pages still need the internet.</p>
+      <p id="update-banner" hidden>
+        A new Helper version is ready. Your saved answers stay on this device.
+        <button type="button" id="reload-update">Reload now</button>
+      </p>
     </div>
     <header>
       <p class="kicker">Unofficial</p>
@@ -70,6 +74,7 @@
 
       <section id="step-pages" class="hero step no-print" data-step="pages">
         <h2 class="sr" tabindex="-1">Your ZIP</h2>
+        <p class="choice-hint">Use your ZIP or pick a state. Your official link appears below.</p>
         <div class="row two">
           <div class="field">
             <label for="zip">ZIP code</label>
@@ -102,6 +107,7 @@
       <section id="step-screen" class="step no-print is-off" data-step="screen">
         <h2 tabindex="-1">Optional screen</h2>
         <p class="hint">Not a decision. Skip if you just want the papers.</p>
+        <p id="screen-rules-note" class="hint"></p>
         <form id="screen-form" action="#" method="dialog">
           <div class="row two">
             <div class="field">
@@ -141,11 +147,11 @@
       <section id="step-packet" class="packet step is-off" data-step="packet">
         <p class="packet-kicker">Unofficial draft. Not a government form.</p>
         <h2 tabindex="-1">Papers to bring</h2>
-        <p id="packet-help" class="hint">Still go if a paper is missing. 10 days for papers, 30 days to decide.</p>
+        <p id="packet-help" class="hint">Bring what you have. If the office asks for proof, it generally gives at least 10 days to send it. Most SNAP cases have a 30-day decision period.</p>
         <div class="print-only">
         <p>This packet is a helper draft. It is not an official form. Your state may ask for different papers.</p>
-        <p>Bring what you have. If you are missing a paper, still go to the interview or complete the phone interview. Ask the worker how they can help you get proof. The office must give you at least 10 days to turn in papers they ask for.</p>
-        <p>SNAP usually requires an interview. In most cases the office has 30 days from the date it got your application to decide your case. If you miss the interview, the office should send a missed-interview notice. Call the number on your notice and ask to reschedule. If you do not reschedule during those 30 days, the office can deny the application on day 30.</p>
+        <p>Bring what you have. If you are missing a paper, still go to the interview or complete the phone interview. Ask the worker how they can help you get proof. If the office requests verification, it generally must give you at least 10 days to send it.</p>
+        <p>SNAP usually requires an interview. In most cases the office has 30 days from the date it gets your application to decide your case. If you miss the interview, the office should send a missed-interview notice. Call the number on your notice and ask to reschedule.</p>
         <p>Apply on the official state site linked in this packet. Open those links in a new tab. They are government sites. This helper is not.</p>
         <p id="packet-season"></p>
         </div>
@@ -184,6 +190,7 @@
         <div class="actions">
           <button type="button" id="save-reminder">Save on this device</button>
           <button type="button" id="download-ics" class="secondary">Download calendar file</button>
+          <button type="button" id="remove-reminder" class="linkish">Remove saved date and note</button>
         </div>
         <p class="status" id="reminder-status" aria-live="polite"></p>
       </section>
@@ -201,23 +208,23 @@
 <li><strong>Alaska</strong> — <a href="https://health.alaska.gov/en/services/division-of-public-assistance-dpa-services/snap-nutrition-assistance/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://health.alaska.gov/en/services/division-of-public-assistance-dpa-services/heating-assistance/" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Arizona</strong> — <a href="https://www.healthearizonaplus.gov/Default/Default.aspx" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://des.az.gov/liheap" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Arkansas</strong> — <a href="https://access.arkansas.gov/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://adeq.state.ar.us/energy/assistance/liheap.aspx" target="_blank" rel="noopener noreferrer">energy help</a></li>
-<li><strong>California</strong> — <a href="https://www.cdss.ca.gov/calfresh/application" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.csd.ca.gov/Pages/Assistance-PayingMyEnergyBills.aspx" target="_blank" rel="noopener noreferrer">energy help</a></li>
+<li><strong>California</strong> — <a href="https://www.benefitscal.com/" target="_blank" rel="noopener noreferrer">SNAP application</a> · <a href="https://csd.ca.gov/Pages/LIHEAPProgram.aspx" target="_blank" rel="noopener noreferrer">energy help information</a></li>
 <li><strong>Colorado</strong> — <a href="https://cdhs.colorado.gov/snap" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://cdhs.colorado.gov/leap" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Connecticut</strong> — <a href="https://portal.ct.gov/dss/snap/supplemental-nutrition-assistance-program---snap/apply" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://portal.ct.gov/dss/economic-security/winter-heating-assistance/energy-assistance---winter-heating" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Delaware</strong> — <a href="https://assist.dhss.delaware.gov/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.dhss.delaware.gov/dhss/dss/liheap.html" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>District of Columbia</strong> — <a href="https://dhs.dc.gov/service/supplemental-nutrition-assistance-program-snap" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://doee.dc.gov/liheap" target="_blank" rel="noopener noreferrer">energy help</a></li>
-<li><strong>Florida</strong> — <a href="https://www.myflfamilies.com/myaccess" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://floridajobs.org/community-planning-and-development/community-services/low-income-home-energy-assistance-program" target="_blank" rel="noopener noreferrer">energy help</a></li>
+<li><strong>Florida</strong> — <a href="https://myaccess.myflfamilies.com/" target="_blank" rel="noopener noreferrer">SNAP application</a> · <a href="https://floridajobs.org/community-planning-and-development/community-services/low-income-home-energy-assistance-program" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Georgia</strong> — <a href="https://www.gateway.ga.gov/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://dfcs.georgia.gov/services/low-income-home-energy-assistance-program-liheap" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Hawaii</strong> — <a href="https://humanservices.hawaii.gov/bessd/snap/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://humanservices.hawaii.gov/bessd/liheap/" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Idaho</strong> — <a href="https://healthandwelfare.idaho.gov/services-programs/food-assistance/about-snap" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://healthandwelfare.idaho.gov/services-programs/financial-assistance/home-heating-and-utility-assistance/about-heating-assistance" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Illinois</strong> — <a href="https://abe.illinois.gov/access/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://dceo.illinois.gov/communityservices/utilitybillassistance/howtoapply.html" target="_blank" rel="noopener noreferrer">energy help</a></li>
-<li><strong>Indiana</strong> — <a href="https://www.fssabenefits.in.gov/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.in.gov/ihcda/homeowners-and-renters/energy-and-utility-assistance-eap/" target="_blank" rel="noopener noreferrer">energy help</a></li>
+<li><strong>Indiana</strong> — <a href="https://www.fssabenefits.in.gov/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.in.gov/ihcda/homeowners-and-renters/low-income-home-energy-assistance-program-liheap/" target="_blank" rel="noopener noreferrer">energy help information</a></li>
 <li><strong>Iowa</strong> — <a href="https://hhsservices.iowa.gov/apspssp/ssp.portal" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://hhs.iowa.gov/assistance-programs/housing-rent-assistance/low-income-home-energy-assistance" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Kansas</strong> — <a href="https://cssp.kees.ks.gov/apspssp/sspNonMed.portal" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.dcf.ks.gov/services/ees/Pages/EnergyAssistance.aspx" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Kentucky</strong> — <a href="https://www.chfs.ky.gov/agencies/dms/Pages/kynectben.aspx" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://chfs.ky.gov/agencies/dcbs/dfs/pdb/Pages/liheap.aspx" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Louisiana</strong> — <a href="https://www.fns.usda.gov/snap-directory-entry/louisiana" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.lhc.la.gov/energy-assistance" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Maine</strong> — <a href="https://www.maine.gov/dhhs/ofi/programs-services/food-supplement/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.mainehousing.org/programs-services/energy/energydetails/liheap" target="_blank" rel="noopener noreferrer">energy help</a></li>
-<li><strong>Maryland</strong> — <a href="https://mydhrbenefits.dhr.state.md.us/dashboardClient/#/register" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://dhs.maryland.gov/office-of-home-energy-programs/" target="_blank" rel="noopener noreferrer">energy help</a></li>
+<li><strong>Maryland</strong> — <a href="https://mydhrbenefits.dhr.state.md.us/dashboardClient/#/register" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://mydhr.benefits.maryland.gov/" target="_blank" rel="noopener noreferrer">energy help application</a></li>
 <li><strong>Massachusetts</strong> — <a href="https://www.mass.gov/how-to/apply-for-snap-benefits-food-stamps" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.mass.gov/how-to/apply-for-home-heating-and-energy-assistance" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Michigan</strong> — <a href="https://newmibridges.michigan.gov/s/isd-landing-page?language=en_US" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.michigan.gov/heatingassistance" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Minnesota</strong> — <a href="https://mnbenefits.mn.gov/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://mn.gov/commerce/energy/consumer-assistance/energy-assistance-program/apply.jsp" target="_blank" rel="noopener noreferrer">energy help</a></li>
@@ -232,16 +239,16 @@
 <li><strong>New York</strong> — <a href="https://otda.ny.gov/programs/apply/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://otda.ny.gov/programs/heap/" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>North Carolina</strong> — <a href="https://epass.nc.gov/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.ncdhhs.gov/divisions/social-services/energy-assistance/low-income-energy-assistance-lieap" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>North Dakota</strong> — <a href="https://www.hhs.nd.gov/applyforhelp/snap" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.hhs.nd.gov/applyforhelp/liheap" target="_blank" rel="noopener noreferrer">energy help</a></li>
-<li><strong>Ohio</strong> — <a href="https://www.benefits.ohio.gov/SNAP" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://energyhelp.ohio.gov/" target="_blank" rel="noopener noreferrer">energy help</a></li>
+<li><strong>Ohio</strong> — <a href="https://www.fns.usda.gov/snap-directory-entry/ohio" target="_blank" rel="noopener noreferrer">SNAP information</a> · <a href="https://occ.ohio.gov/factsheet/home-energy-assistance-program-heap" target="_blank" rel="noopener noreferrer">energy help information</a></li>
 <li><strong>Oklahoma</strong> — <a href="https://www.okdhslive.org/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://oklahoma.gov/okdhs/services/liheap/utilityservicesliheapmain.html" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Oregon</strong> — <a href="https://benefits.oregon.gov/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.oregon.gov/ohcs/energy-weatherization" target="_blank" rel="noopener noreferrer">energy help</a></li>
-<li><strong>Pennsylvania</strong> — <a href="https://www.compass.dhs.pa.gov/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.dhs.pa.gov/Services/Assistance/Pages/LIHEAP.aspx" target="_blank" rel="noopener noreferrer">energy help</a></li>
+<li><strong>Pennsylvania</strong> — <a href="https://www.compass.dhs.pa.gov/" target="_blank" rel="noopener noreferrer">SNAP application</a> · <a href="https://www.pa.gov/agencies/dhs/resources/liheap" target="_blank" rel="noopener noreferrer">energy help information</a></li>
 <li><strong>Rhode Island</strong> — <a href="https://dhs.ri.gov/programs-and-services/supplemental-nutrition-assistance-program-snap" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://dhs.ri.gov/programs-and-services/energy-assistance-programs/heap" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>South Carolina</strong> — <a href="https://www.fns.usda.gov/snap-directory-entry/south-carolina" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://oeo.sc.gov/" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>South Dakota</strong> — <a href="https://www.fns.usda.gov/snap-directory-entry/south-dakota" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://dss.sd.gov/economicassistance/energyassistance/lowincome.aspx" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Tennessee</strong> — <a href="https://www.tn.gov/humanservices/for-families/supplemental-nutrition-assistance-program-snap.html" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://thda.org/help-for-homeowners/energy-assistance-programs/low-income-home-energy-assistance-program-liheap" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Texas</strong> — <a href="https://www.yourtexasbenefits.com/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.tdhca.texas.gov/help-for-texans" target="_blank" rel="noopener noreferrer">energy help</a></li>
-<li><strong>Utah</strong> — <a href="https://jobs.utah.gov/mycase/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://jobs.utah.gov/housing/scso/seal/heat.html" target="_blank" rel="noopener noreferrer">energy help</a></li>
+<li><strong>Utah</strong> — <a href="https://jobs.utah.gov/eligibility/index.html" target="_blank" rel="noopener noreferrer">SNAP start page</a> · <a href="https://jobs.utah.gov/housing/scso/seal/heat.html" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Vermont</strong> — <a href="https://dcf.vermont.gov/benefits/3SquaresVT" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://dcf.vermont.gov/benefits/fuel" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Virginia</strong> — <a href="https://commonhelp.virginia.gov/access/" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://commonhelp.virginia.gov/" target="_blank" rel="noopener noreferrer">energy help</a></li>
 <li><strong>Washington</strong> — <a href="https://www.washingtonconnection.org" target="_blank" rel="noopener noreferrer">SNAP</a> · <a href="https://www.commerce.wa.gov/community-opportunities/liheap/" target="_blank" rel="noopener noreferrer">energy help</a></li>
