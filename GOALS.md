@@ -13,7 +13,7 @@ Must finish first. Freeze facts in `research/freeze.json` and `research/SOURCES.
 | R1 | Official SNAP apply or portal URL for all 50 states + DC | 51 rows with `state`, `name`, `snapApplyUrl`, `retrieved` | Spot-fetch 8 URLs return HTTP 200 or an official redirect |
 | R2 | Official LIHEAP apply or local-office finder URL for all 50 states + DC | 51 rows with `liheapApplyUrl` or `liheapOfficeUrl` | Same 8-state spot-fetch |
 | R3 | ZIP → state mapping method that works offline | Documented method + dataset or generator | 20 known ZIPs map correctly, including DC and a PO box ZIP |
-| R4 | Older-adult SNAP screen that never claims eligibility | Written rules + FY2026 (or latest) FPL table + resource notes + "unknown" path | Every output is `likely_worth_applying`, `maybe`, or `probably_not`, never eligible/ineligible |
+| R4 | Older-adult SNAP screen that never claims eligibility | Written rules + FY2026 (or latest) FPL table + resource notes + "unknown" path | Every output is `likely_worth_applying` or `maybe`, never eligible/ineligible |
 | R5 | SNAP interview document list (generic, not legal advice) | Checklist with source for each item | No state-specific legal claims |
 | R6 | Legal copy freeze | Disclaimer, privacy, "not a determination," "not legal advice" | Counsel-level review: no unauthorized practice, no false official branding |
 | R7 | Older-adult UI constraints | Type size, contrast, no-account, print, phone, JS-failure | Maps to WCAG 2.2 AA targets we will actually hit |

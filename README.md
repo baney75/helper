@@ -38,7 +38,7 @@ Open the URL Vite prints. The production build assumes GitHub Pages at `/helper/
 
 State links live in `src/data/programs.ts`. SNAP income tables for FY2026 (1 Oct 2025 through 30 Sep 2026) live in `src/data/fpl.ts`. Sources and the update policy are in `research/SOURCES.md`.
 
-If a portal is down, keep the official how-to page. Do not invent URLs. Screening copy may say `likely_worth_applying`, `maybe`, or `probably_not`. It must not say eligible or ineligible.
+If a portal is down, keep the official how-to page. Do not invent URLs. Screening copy may say `likely_worth_applying` or `maybe`. It must not say eligible or ineligible.
 
 ## Check the two demos
 

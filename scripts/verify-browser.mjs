@@ -140,6 +140,26 @@ assert(ca.snap === "https://www.benefitscal.com/", `Wrong CA SNAP link: ${ca.sna
 assert(ca.liheap === "https://csd.ca.gov/Pages/LIHEAPProgram.aspx", `Wrong CA LIHEAP link: ${ca.liheap}`);
 assert(/application/i.test(ca.label), "California link is not identified as an application");
 
+await cleanOpen("fishers-island");
+await fillInput("zip", "06390");
+const fishers = await page.evaluate(() => ({
+  state: document.querySelector("#state").value,
+  snap: document.querySelector("#snap-link").href,
+  status: document.querySelector("#zip-status").textContent,
+}));
+assert(fishers.state === "NY", `06390 selected ${fishers.state}, not NY`);
+assert(/New York/.test(fishers.status), "06390 did not identify New York");
+assert(fishers.snap === "https://otda.ny.gov/programs/apply/", `Wrong NY SNAP link: ${fishers.snap}`);
+await snap("16-fishers-island-new-york.png");
+
+await fillInput("zip", "06389");
+const nearbyConnecticut = await page.evaluate(() => ({
+  state: document.querySelector("#state").value,
+  status: document.querySelector("#zip-status").textContent,
+}));
+assert(nearbyConnecticut.state === "CT", `06389 selected ${nearbyConnecticut.state}, not CT`);
+assert(/Connecticut/.test(nearbyConnecticut.status), "Nearby 06389 did not remain Connecticut");
+
 await cleanOpen("invalid");
 await fillInput("zip", "00000");
 const invalid = await page.evaluate(() => ({
@@ -298,6 +318,8 @@ const report = {
   checks: {
     pennsylvania: pa,
     california: ca,
+    fishersIsland: fishers,
+    nearbyConnecticut,
     manualStateConflict: manual,
     invalidZip: invalid,
     phoneLayout: phone,

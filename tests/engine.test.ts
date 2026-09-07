@@ -106,6 +106,8 @@ describe("lookupZip", () => {
     expect(lookupZip("96813")).toEqual({ kind: "state", state: "HI" });
     expect(lookupZip("82001")).toEqual({ kind: "state", state: "WY" });
     expect(lookupZip("00501")).toEqual({ kind: "state", state: "NY" });
+    expect(lookupZip("06390")).toEqual({ kind: "state", state: "NY" });
+    expect(lookupZip("06389")).toEqual({ kind: "state", state: "CT" });
     expect(lookupZip("19901")).toEqual({ kind: "state", state: "DE" });
     expect(lookupZip("02108")).toEqual({ kind: "state", state: "MA" });
     expect(lookupZip("33132")).toEqual({ kind: "state", state: "FL" });
@@ -187,13 +189,13 @@ describe("screenOlderAdult", () => {
       }),
     ];
     for (const out of samples) {
-      expect(["likely_worth_applying", "maybe", "probably_not"]).toContain(out.result);
+      expect(["likely_worth_applying", "maybe"]).toContain(out.result);
       expect(out.body.toLowerCase()).not.toMatch(/\beligible\b|\bineligible\b/);
       expect(out.headline.toLowerCase()).not.toMatch(/\beligible\b|\bineligible\b/);
       expect(out.headline.toLowerCase()).not.toMatch(/looks less likely/);
     }
-    expect(samples[2]?.result).toBe("probably_not");
-    expect(samples[2]?.headline).toBe("Apply anyway. Only the office decides.");
+    expect(samples[2]?.result).toBe("maybe");
+    expect(samples[2]?.headline).toBe("An application is the only official way to find out.");
   });
 
   it("pauses numeric screening after the FY2026 source expires", () => {
@@ -262,16 +264,19 @@ describe("screenOlderAdult", () => {
     ).toBe("maybe");
   });
 
-  it("keeps 165 percent income with high resources at maybe", () => {
-    const out = screenOlderAdult({
-      age: 68,
-      householdSize: 1,
-      state: "OH",
-      grossMonthlyIncome: 2000,
-      countableResources: 80000,
-      highShelterOrMedical: false,
-    });
-    expect(out.result).toBe("maybe");
+  it("does not use the 165 percent separate-household figure as an applicant cutoff", () => {
+    for (const grossMonthlyIncome of [2152, 2153]) {
+      const out = screenOlderAdult({
+        age: 68,
+        householdSize: 1,
+        state: "PA",
+        grossMonthlyIncome,
+        countableResources: 100,
+        highShelterOrMedical: false,
+      });
+      expect(out.result).toBe("maybe");
+      expect(out.headline).toBe("An application is the only official way to find out.");
+    }
   });
 });
 

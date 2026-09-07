@@ -36,11 +36,13 @@ Do not mix HHS calendar-year FPL into SNAP FY2026 income tests. SNAP screens use
 ## ZIP
 
 - [USPS L002 ZIP prefix](https://postalpro.usps.com/node/2586)
+- [USPS Fishers Island Post Office](https://tools.usps.com/locations/details/1434565) (confirms Fishers Island, NY 06390; exact exception to the otherwise Connecticut 063 prefix)
 - [FNS NAP / Puerto Rico](https://www.fns.usda.gov/nap/pr/summary) (PR is NAP, not SNAP)
 
 ## Maintenance policy
 
 - The optional income screen is limited to FNS FY2026 monthly figures and automatically pauses after 30 September 2026. Do not extend it into FY2027 without replacing the table from the current FNS COLA source and rechecking its copy.
+- The optional screen uses the 130% gross figure only as a conservative encouragement boundary. It returns a neutral result above that boundary because the collected gross income cannot estimate the net income of an older or disabled household after deductions. The FNS 165% table is not used: that figure applies to the income of other co-residents in a narrow separate-household provision, not the older applicant's gross-income limit.
 - Recheck all state destinations at least each fiscal year and whenever a state page redirects, a seasonal program closes, or an official agency changes its application guidance. An HTTP success or redirect does not prove that a portal is accepting applications.
 
 ## Targeted check 6 Sep 2026

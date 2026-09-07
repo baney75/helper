@@ -51,6 +51,7 @@ export default defineConfig({
         ],
       },
       workbox: {
+        importScripts: ["/helper/sw-legacy-migrate.js"],
         globPatterns: ["**/*.{js,css,html,svg,png,jpg,ico,txt,webmanifest}"],
         cleanupOutdatedCaches: true,
         clientsClaim: true,

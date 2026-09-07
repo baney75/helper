@@ -5,7 +5,7 @@ export type ZipLookup =
 
 type Range = { start: number; end: number; state: string };
 
-/** USPS 3-digit prefix bands for 50 states + DC. Overlays handle DC and NY 005. */
+/** USPS 3-digit prefix bands for 50 states + DC. Exact overlays handle known exceptions. */
 const RANGES: Range[] = [
   { start: 5, end: 5, state: "NY" },
   { start: 10, end: 27, state: "MA" },
@@ -84,6 +84,10 @@ export function lookupZip(raw: string): ZipLookup {
       kind: "out_of_scope",
       reason: "This helper covers the 50 states and D.C. only. American Samoa is outside that list.",
     };
+  }
+  // Fishers Island is part of New York even though its 063 prefix is otherwise Connecticut.
+  if (zip5 === "06390") {
+    return { kind: "state", state: "NY" };
   }
   const prefix = Number.parseInt(zip5.slice(0, 3), 10);
   if (prefix >= 6 && prefix <= 9) {
