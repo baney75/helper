@@ -874,16 +874,27 @@ body:not([data-step="pages"]) .legal:not([open]) summary {
     height: 0.18in;
     margin-top: 0.02in;
   }
+  #packet-official .button,
+  #packet-liheap-link {
+    display: block;
+    height: auto;
+  }
   #packet-official .button {
     padding: 0.08in 0.1in;
     min-height: auto;
     font-size: 10pt;
   }
+  #packet-liheap-link {
+    width: fit-content;
+    min-height: auto;
+    padding: 0;
+  }
   a[href]::after {
-    content: "\A" attr(href);
+    content: "Official URL: " attr(href);
     display: block;
-    white-space: pre-wrap;
+    margin-top: 0.02in;
     font-size: 7.5pt;
+    line-height: 1.2;
     word-break: break-all;
   }
 }
