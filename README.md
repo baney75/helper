@@ -1,6 +1,10 @@
 # Helper
 
+![Helper checklist for official SNAP pages and interview papers](public/og.jpg)
+
 Live site: https://baney75.github.io/helper/
+
+Built with TypeScript and Vite.
 
 Helper helps someone 60 or older find an official state SNAP page, prepare a papers list, and keep an interview or recertification date. It has no account and does not send answers to a server.
 
