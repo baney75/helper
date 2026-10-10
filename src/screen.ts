@@ -1,8 +1,9 @@
 import {
-  ELDERLY_RESOURCE_CAP,
+  elderlyResourceCap,
   hasCurrentSnapScreenRules,
   regionForState,
   snapMonthlyLimits,
+  snapScreenPausedBody,
 } from "./data/fpl";
 
 export type ScreenResult = "likely_worth_applying" | "maybe";
@@ -43,7 +44,7 @@ export function screenOlderAdult(input: ScreenInput, now = new Date()): ScreenOu
     return {
       result: "maybe",
       headline: "Use the official SNAP page for current rules.",
-      body: "This optional income screen is paused because its FY2026 source ended September 30, 2026. Only the state SNAP office can decide your case.",
+      body: snapScreenPausedBody(),
     };
   }
 
@@ -59,7 +60,7 @@ export function screenOlderAdult(input: ScreenInput, now = new Date()): ScreenOu
   }
 
   const size = input.householdSize && input.householdSize >= 1 ? input.householdSize : 1;
-  const limits = snapMonthlyLimits(regionForState(input.state), size);
+  const limits = snapMonthlyLimits(regionForState(input.state), size, now);
 
   if (input.grossMonthlyIncome === null) {
     return copy("maybe");
@@ -67,7 +68,7 @@ export function screenOlderAdult(input: ScreenInput, now = new Date()): ScreenOu
 
   const income = input.grossMonthlyIncome;
   const overResourceCap =
-    input.countableResources !== null && input.countableResources > ELDERLY_RESOURCE_CAP;
+    input.countableResources !== null && input.countableResources > (elderlyResourceCap(now) ?? 0);
 
   // This is intentionally one-sided: a low gross figure can encourage an application,
   // but gross income alone cannot estimate an older household's net income after deductions.

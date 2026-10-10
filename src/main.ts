@@ -1,5 +1,5 @@
 import { ENERGYHELP, FNS_DIRECTORY, NEAR_PHONE, PROGRAMS, programForState } from "./data/programs";
-import { snapScreenRulesNote } from "./data/fpl";
+import { longDate, snapScreenRulesNote } from "./data/fpl";
 import { packetItems } from "./packet";
 import { fillWithPhoneLinks } from "./phone";
 import { icsFilename, icsForReminder, isReminderKind, type ReminderKind } from "./reminder";
@@ -106,7 +106,7 @@ function setOfficialLinks(code: string): void {
   bindOfficial(packetLiheap, row.liheapUrl, `${row.name} energy help page`);
   fillWithPhoneLinks(
     note,
-    `${row.energyHelpNote} National referral: ${NEAR_PHONE}. Or search by state at Energyhelp.`,
+    `${row.energyHelpNote} National referral: ${NEAR_PHONE}. Or search by state at Energyhelp. Official links last checked ${longDate(row.checkedOn)}. A page can change after that.`,
   );
   note.hidden = false;
   setSnapReady(true);
