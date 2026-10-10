@@ -6,7 +6,9 @@
  *   Cost-of-Living Adjustments", dated 21 Aug 2026. Income eligibility standards
  *   are on page 3; the asset limit is on page 2.
  *   URL: https://www.usda.gov/sites/default/files/guidance-documents/fna.snap-cola2027.pdf
- *   Retrieved 10 Oct 2026 (see research/SOURCES.md for how).
+ *   Checked 10 Oct 2026 against the FNS tables:
+ *   https://www.fns.usda.gov/sites/default/files/resource-files/snap-fy27-incomeEligibilityStandards.pdf
+ *   (see research/SOURCES.md).
  * FY2026 (1 Oct 2025 to 30 Sep 2026)
  *   Source: FNS COLA, https://www.fns.usda.gov/snap/allotment/COLA
  *
