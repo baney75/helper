@@ -27,6 +27,7 @@ async function main() {
   const source = await readFile(new URL("../src/data/fpl.ts", import.meta.url), "utf8");
   const end = newestEnd(source);
   const days = daysUntil(end, today);
+  if (Number.isNaN(days)) throw new Error("--today or a table end is not a real date");
   if (days <= WARN_DAYS) {
     const state = days < 0 ? `ended ${-days} days ago` : `ends in ${days} days`;
     console.error(
