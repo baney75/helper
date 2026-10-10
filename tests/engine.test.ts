@@ -161,6 +161,8 @@ describe("ZIP state selection", () => {
 });
 
 describe("screenOlderAdult", () => {
+  const currentRulesDate = new Date("2026-09-30T12:00:00");
+
   it("never returns eligible or ineligible tokens", () => {
     const samples = [
       screenOlderAdult({
@@ -170,7 +172,7 @@ describe("screenOlderAdult", () => {
         grossMonthlyIncome: 900,
         countableResources: 200,
         highShelterOrMedical: false,
-      }),
+      }, currentRulesDate),
       screenOlderAdult({
         age: 45,
         householdSize: 1,
@@ -178,7 +180,7 @@ describe("screenOlderAdult", () => {
         grossMonthlyIncome: 900,
         countableResources: null,
         highShelterOrMedical: false,
-      }),
+      }, currentRulesDate),
       screenOlderAdult({
         age: 70,
         householdSize: 1,
@@ -186,7 +188,7 @@ describe("screenOlderAdult", () => {
         grossMonthlyIncome: 8000,
         countableResources: 80000,
         highShelterOrMedical: false,
-      }),
+      }, currentRulesDate),
     ];
     for (const out of samples) {
       expect(["likely_worth_applying", "maybe"]).toContain(out.result);
@@ -198,10 +200,13 @@ describe("screenOlderAdult", () => {
     expect(samples[2]?.headline).toBe("An application is the only official way to find out.");
   });
 
-  it("pauses numeric screening after the FY2026 source expires", () => {
-    const expired = new Date("2026-10-01T12:00:00");
+  it("pauses numeric screening after the newest loaded table expires", () => {
+    const expired = new Date("2027-10-01T12:00:00");
+    expect(hasCurrentSnapScreenRules(currentRulesDate)).toBe(true);
+    expect(hasCurrentSnapScreenRules(new Date("2027-09-30T12:00:00"))).toBe(true);
     expect(hasCurrentSnapScreenRules(expired)).toBe(false);
     expect(snapScreenRulesNote(expired)).toMatch(/paused/i);
+    expect(snapScreenRulesNote(expired)).toMatch(/not loaded/i);
     expect(
       screenOlderAdult(
         {
@@ -225,7 +230,7 @@ describe("screenOlderAdult", () => {
       grossMonthlyIncome: 1100,
       countableResources: 500,
       highShelterOrMedical: false,
-    });
+    }, currentRulesDate);
     expect(out.result).toBe("likely_worth_applying");
   });
 
@@ -237,7 +242,7 @@ describe("screenOlderAdult", () => {
       grossMonthlyIncome: 1100,
       countableResources: 80000,
       highShelterOrMedical: false,
-    });
+    }, currentRulesDate);
     expect(out.result).toBe("maybe");
   });
 
@@ -250,7 +255,7 @@ describe("screenOlderAdult", () => {
         grossMonthlyIncome: 900,
         countableResources: 200,
         highShelterOrMedical: false,
-      }).result,
+      }, currentRulesDate).result,
     ).toBe("maybe");
     expect(
       screenOlderAdult({
@@ -260,7 +265,7 @@ describe("screenOlderAdult", () => {
         grossMonthlyIncome: 1100,
         countableResources: 4501,
         highShelterOrMedical: false,
-      }).result,
+      }, currentRulesDate).result,
     ).toBe("maybe");
   });
 
@@ -273,7 +278,7 @@ describe("screenOlderAdult", () => {
         grossMonthlyIncome,
         countableResources: 100,
         highShelterOrMedical: false,
-      });
+      }, currentRulesDate);
       expect(out.result).toBe("maybe");
       expect(out.headline).toBe("An application is the only official way to find out.");
     }
