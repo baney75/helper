@@ -68,3 +68,9 @@ MIT. See `LICENSE`.
 
 If this saved you a trip:
 https://buymeacoffee.com/baneydonovan
+
+## Sponsors
+
+<!-- sponsors:start -->
+No sponsors yet. [Sponsor on GitHub](https://github.com/sponsors/baney75) and your name appears here automatically.
+<!-- sponsors:end -->
